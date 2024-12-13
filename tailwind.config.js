@@ -1,7 +1,6 @@
-import type { Config } from "tailwindcss";
-
-export default {
-  content: ['./**/*.{tsx,css}'],
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./src/**/*.{tsx,css}'],
   theme: {
     fontFamily: {
       sans: ['Inter', 'sans-serif'],
@@ -31,5 +30,5 @@ export default {
       }
     }
   },
-  plugins: [],
-} satisfies Config;
+  plugins: []
+};
