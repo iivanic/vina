@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { IntlProvider } from "react-intl";
 import './App.css';
-
+import Login from './login';
 function App() {
     const [forecasts, setForecasts] = useState();
 
@@ -32,11 +33,14 @@ function App() {
         </table>;
 
     return (
-        <div>
-            <h1 id="tableLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-        </div>
+        <IntlProvider>
+            <div className="container">
+                <Login />
+                <h1 id="tableLabel">Weather forecast</h1>
+                <p>This component demonstrates fetching data from the server.</p>
+                {contents}
+            </div>
+        </IntlProvider>
     );
     
     async function populateWeatherData() {
