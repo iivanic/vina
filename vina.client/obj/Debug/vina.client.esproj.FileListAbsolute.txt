@@ -1,0 +1,2 @@
+C:\Users\Igor_\source\repos\vina\vina.client\obj\Debug\vina.client.esproj.CoreCompileInputs.cache
+C:\Users\Igor_\OneDrive\Desktop\vina\vina\vina.client\obj\Debug\vina.client.esproj.CoreCompileInputs.cache

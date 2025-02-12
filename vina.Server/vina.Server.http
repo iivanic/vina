@@ -1,0 +1,6 @@
+@vina.Server_HostAddress = http://localhost:5186
+
+GET {{vina.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
