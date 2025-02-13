@@ -34,15 +34,72 @@ function App() {
 
     return (
         <IntlProvider>
-            <div className="container">
-                <Login />
-                <h1 id="tableLabel">Weather forecast</h1>
-                <p>This component demonstrates fetching data from the server.</p>
-                {contents}
+            <div class="container">
+                <nav class="navbar fixed-top navbar-light bg-light">
+                    <a class="navbar-brand" href="#">Fixed top</a>
+                </nav>
+                <br></br>
+                <br></br>
+                <br></br>
+                <br></br>
+                <div class="row">
+                    <div class="col">
+                        <h1 id="tableLabel">Weather forecast</h1>
+                        <p>This component demonstrates fetching data from the server.</p>
+                        {contents}
+                    </div>
+                    <div class="col">
+                        <Login />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+                        <h1>jm kljopćj opć op</h1>
+
+
+                    </div>
+                </div>
             </div>
-        </IntlProvider>
+        </IntlProvider >
     );
-    
+
     async function populateWeatherData() {
         const response = await fetch('weatherforecast');
         if (response.ok) {
