@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35728.132 d17.12
+VisualStudioVersion = 17.12.35728.132
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vina.Server", "vina.Server\vina.Server.csproj", "{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "vina.client", "vina.client\vina.client.esproj", "{172AB810-D58A-4AD5-8C3B-FDDFFF5C712D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBcs", "DBcs\DBcs.csproj", "{8A87EE80-884E-0AC6-2816-2DD3F23A575C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{172AB810-D58A-4AD5-8C3B-FDDFFF5C712D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{172AB810-D58A-4AD5-8C3B-FDDFFF5C712D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{172AB810-D58A-4AD5-8C3B-FDDFFF5C712D}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{8A87EE80-884E-0AC6-2816-2DD3F23A575C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A87EE80-884E-0AC6-2816-2DD3F23A575C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A87EE80-884E-0AC6-2816-2DD3F23A575C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A87EE80-884E-0AC6-2816-2DD3F23A575C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

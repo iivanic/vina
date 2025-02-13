@@ -1,32 +1,7 @@
-/*import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IntlProvider } from "react-intl";
 import './App.css';
-import Login from './login';*/
-import Navbar from "./components/Navbar";
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-} from "react-router-dom";
-import Home from "./pages";
-import SignIn from "./pages/signin";
-import Account from "./pages/account";
-
-function App() {
-    return (
-        <Router>
-            <Navbar />
-            <Routes>
-                <Route exact path="/" element={<Home />} />
-                <Route path="/account" element={<Account />} />
-                <Route path="/signin" element={<SignIn />} />
-            </Routes>
-        </Router>
-    );
-}
-
-export default App;
-/*
+import Login from './components/login';
 function App() {
     const [forecasts, setForecasts] = useState();
 
@@ -77,4 +52,4 @@ function App() {
     }
 }
 
-export default App;*/
+export default App;
