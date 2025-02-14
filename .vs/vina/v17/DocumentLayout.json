@@ -1,37 +1,12 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Igor_\\source\\repos\\vina\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}|vina.Server\\vina.Server.csproj|c:\\users\\igor_\\source\\repos\\vina\\vina.server\\changelog.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
-      "RelativeMoniker": "D:0:0:{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}|vina.Server\\vina.Server.csproj|solutionrelative:vina.server\\changelog.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
-    }
-  ],
+  "WorkspaceRootPath": "C:\\Users\\Igor_\\OneDrive\\Desktop\\vina\\vina\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "CHANGELOG.md",
-              "DocumentMoniker": "C:\\Users\\Igor_\\source\\repos\\vina\\vina.Server\\CHANGELOG.md",
-              "RelativeDocumentMoniker": "vina.Server\\CHANGELOG.md",
-              "ToolTip": "C:\\Users\\Igor_\\source\\repos\\vina\\vina.Server\\CHANGELOG.md",
-              "RelativeToolTip": "vina.Server\\CHANGELOG.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2025-02-12T18:12:50.431Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }

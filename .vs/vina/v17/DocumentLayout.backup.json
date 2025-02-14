@@ -1,18 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Igor_\\source\\repos\\vina\\",
+  "WorkspaceRootPath": "C:\\Users\\Igor_\\OneDrive\\Desktop\\vina\\vina\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}|vina.Server\\vina.Server.csproj|c:\\users\\igor_\\source\\repos\\vina\\vina.server\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}|vina.Server\\vina.Server.csproj|solutionrelative:vina.server\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{172AB810-D58A-4AD5-8C3B-FDDFFF5C712D}|vina.client\\vina.client.esproj|c:\\users\\igor_\\source\\repos\\vina\\vina.client\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{172AB810-D58A-4AD5-8C3B-FDDFFF5C712D}|vina.client\\vina.client.esproj|solutionrelative:vina.client\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{172AB810-D58A-4AD5-8C3B-FDDFFF5C712D}|vina.client\\vina.client.esproj|c:\\users\\igor_\\source\\repos\\vina\\vina.client\\.vscode\\launch.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{172AB810-D58A-4AD5-8C3B-FDDFFF5C712D}|vina.client\\vina.client.esproj|solutionrelative:vina.client\\.vscode\\launch.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}|vina.Server\\vina.Server.csproj|c:\\users\\igor_\\onedrive\\desktop\\vina\\vina\\vina.server\\changelog.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}|vina.Server\\vina.Server.csproj|solutionrelative:vina.server\\changelog.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     }
   ],
   "DocumentGroupContainers": [
@@ -27,40 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": ".gitignore",
-              "DocumentMoniker": "C:\\Users\\Igor_\\source\\repos\\vina\\vina.Server\\.gitignore",
-              "RelativeDocumentMoniker": "vina.Server\\.gitignore",
-              "ToolTip": "C:\\Users\\Igor_\\source\\repos\\vina\\vina.Server\\.gitignore",
-              "RelativeToolTip": "vina.Server\\.gitignore",
-              "ViewState": "AgIAAGwAAAAAAAAAAAAAAA0AAAALAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-02-12T18:12:22.388Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": ".gitignore",
-              "DocumentMoniker": "C:\\Users\\Igor_\\source\\repos\\vina\\vina.client\\.gitignore",
-              "RelativeDocumentMoniker": "vina.client\\.gitignore",
-              "ToolTip": "C:\\Users\\Igor_\\source\\repos\\vina\\vina.client\\.gitignore",
-              "RelativeToolTip": "vina.client\\.gitignore",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-02-12T18:11:00.726Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "launch.json",
-              "DocumentMoniker": "C:\\Users\\Igor_\\source\\repos\\vina\\vina.client\\.vscode\\launch.json",
-              "RelativeDocumentMoniker": "vina.client\\.vscode\\launch.json",
-              "ToolTip": "C:\\Users\\Igor_\\source\\repos\\vina\\vina.client\\.vscode\\launch.json",
-              "RelativeToolTip": "vina.client\\.vscode\\launch.json",
+              "Title": "CHANGELOG.md",
+              "DocumentMoniker": "C:\\Users\\Igor_\\OneDrive\\Desktop\\vina\\vina\\vina.Server\\CHANGELOG.md",
+              "RelativeDocumentMoniker": "vina.Server\\CHANGELOG.md",
+              "ToolTip": "C:\\Users\\Igor_\\OneDrive\\Desktop\\vina\\vina\\vina.Server\\CHANGELOG.md",
+              "RelativeToolTip": "vina.Server\\CHANGELOG.md",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-02-12T18:05:43.609Z",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2025-02-12T18:12:50.431Z",
               "EditorCaption": ""
             }
           ]
