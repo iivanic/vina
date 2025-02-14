@@ -242,6 +242,7 @@ COPY public.products (id, name_translation_key, description_translation_key, pri
 1	pk_21	pk_21_desc	17	6	t	t	1	pk_21_full
 2	pk_22	pk_22_desc	17	6	t	t	1	pk_21_full
 3	dr_21	dr_21_desc	17	6	t	t	2	pk_21_full
+4	dr_15	dr_15_desc	17	6	t	t	2	pk_15_full
 \.
 
 
