@@ -103,8 +103,47 @@ namespace vina.Server.Classes
         // Collection of class that references via FK
         public List<DBTranslation> Products { get; set; } = new List<DBTranslation>();
         // Not used by DBHelp directly
-        public const string SelectText = "select * from categories ;";
-        public const string SelectSingleText = "select * from categories where id=@id;";
+        public const string SelectText = @"
+                select
+                    p.Id, 
+                    t1.content as name_translation_key,
+                    t2.content as description_translation_key,
+                    p.price,
+                    p.max_order,
+                    avalaible,
+                    published,
+                    category_id,
+                    t3.content as full_translation_key
+                from products p
+                left join translations t1 on p.name_translation_key = t1.key
+                left join translations t2 on p.description_translation_key = t2.key
+                left join translations t3 on p.full_translation_key = t3.key
+                where 
+                t1.lang = t2.lang
+                and t2.lang = t3.lang
+                and t3.lang = @lang
+                and published = true;";
+        public const string SelectSingleText =  @"
+                select
+                    p.Id, 
+                    t1.content as name_translation_key,
+                    t2.content as description_translation_key,
+                    p.price,
+                    p.max_order,
+                    avalaible,
+                    published,
+                    category_id,
+                    t3.content as full_translation_key
+                from products p
+                left join translations t1 on p.name_translation_key = t1.key
+                left join translations t2 on p.description_translation_key = t2.key
+                left join translations t3 on p.full_translation_key = t3.key
+                where 
+                t1.lang = t2.lang
+                and t2.lang = t3.lang
+                and t3.lang = @lang
+                and published = true
+                and id=@id;";
         public const string UpdateText = "update categories set name_translation_key=@name_translation_key where id=@id returning *;";
         public const string InsertText = "insert into categories (name_translation_key) values(@name_translation_key)  returning *;";
         public const string DeleteText = "delete from categories where id=@id;";
