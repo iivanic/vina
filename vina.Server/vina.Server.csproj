@@ -13,12 +13,10 @@
 
   <ItemGroup>
     <None Remove="db.pgsql" />
-    <None Remove="db_copy.pgsql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="db.pgsql" />    
-    <EmbeddedResource Include="db_copy.pgsql" />
+    <EmbeddedResource Include="db.pgsql" />
   </ItemGroup>
 
   <ItemGroup>

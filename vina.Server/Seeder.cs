@@ -4,7 +4,8 @@ namespace vina.Server
 {
     public class Seeder
     {
-        public const string dbName = "vina_ivanic";
+        public const string seed_script = "db.pgsql";
+        public const string dbName = "vina_ivanic_hr";
         const string connString = @"Server=localhost;Port=5433;Username=n;Password=n;database={DATABASE};";
         string connStringDefaultDb = connString.Replace("{DATABASE}", "postgres");
         string connStringMyDb = connString.Replace("{DATABASE}", dbName);
@@ -48,17 +49,13 @@ namespace vina.Server
 
             }
         }
-
-        public async Task<string> DbSeed()
+        public async Task<int> DbSeed()
         {
             var dBcs = new DBcs.DBcs(connStringMyDb);
             //create schema and data
-            await dBcs.RunNonQueryAsync( await LoadScriptFromResource("db.pgsql"));
-            Console.Write("Schema created");
-        
-            
-            Console.Write("Database seeded.");
-            return "Seeded";
+            int ret = await dBcs.RunNonQueryAsync( await LoadScriptFromResource(seed_script));
+            Console.Write($"Script {seed_script} executed.");
+            return ret;
         }
         public async Task DbDrop()
         {
@@ -71,7 +68,7 @@ namespace vina.Server
                 Console.Write("Database deleted.");
             }
         }
-        public async Task<string> LoadScriptFromResource(string scriptName)
+        private async Task<string> LoadScriptFromResource(string scriptName)
         {
             var assembly = Assembly.GetExecutingAssembly();
             string resourceName = assembly.GetManifestResourceNames()
