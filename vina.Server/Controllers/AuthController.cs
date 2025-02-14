@@ -38,7 +38,24 @@ namespace vina.Server.Controllers
         [HttpGet(Name = "GetMyOptions")]
         public SortedList<string,string> GetMyOptions(string token, string language)
         {
-            return new SortedList<string, string>();
+            var ret =  new SortedList<string, string>();
+#if DEBUG
+            if(Seeder.Instance.DbExists())
+            {
+                ret.Add("Drop Database", "auth/dbdrop");
+                //isAdmin
+                ret.Add("Users", "auth/getusers");
+                ret.Add("Orders", "auth/getorders");
+                ret.Add("DeleteUser", "auth/deleteuser");
+                ret.Add("DeleteOrder", "auth/deleteorder");
+                ret.Add("SetOrderStatus", "auth/setorderstatus");
+            }
+            else
+            {
+                ret.Add("Create Database", "auth/dbseed");
+            }
+#endif            
+            return ret;
         }
 
 
