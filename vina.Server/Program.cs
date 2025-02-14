@@ -18,7 +18,7 @@ app.MapStaticAssets();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference(); // Scalar UI at /scalar/v1 when running your application
+    app.MapScalarApiReference(); // Scalar UI at http://localhost:5186/scalar/v1 when running your application
 }
 
 app.UseHttpsRedirection();
@@ -29,7 +29,6 @@ app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
 
-Seeder.Instance.DbReCreate().Wait();
-Seeder.Instance.DbSeed().Wait();
+//var c = Seeder.Instance.GetClasses().GetAwaiter().GetResult();
 
 app.Run();

@@ -1,14 +1,15 @@
-@vina.Server_HostAddress = http://localhost:5186
+@Server_HostAddress = http://localhost:5186
 
-GET {{vina.Server_HostAddress}}/weatherforecast/
+###
+GET {{Server_HostAddress}}/products/getproducts
 Accept: application/json
 
 ###
-GET {{vina.Server_HostAddress}}/products/
+GET {{Server_HostAddress}}/products/getproduct/1
 Accept: application/json
 
 ###
-GET {{vina.Server_HostAddress}}/auth/
+GET {{Server_HostAddress}}/auth/
 Accept: application/json
 
 ###

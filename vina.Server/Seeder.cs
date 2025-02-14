@@ -1,5 +1,6 @@
  using System.IO;
  using System.Reflection;
+using System.Runtime.CompilerServices;
 namespace vina.Server
 {
     public class Seeder
@@ -8,7 +9,7 @@ namespace vina.Server
         public const string dbName = "vina_ivanic_hr";
         const string connString = @"Server=localhost;Port=5433;Username=n;Password=n;database={DATABASE};";
         string connStringDefaultDb = connString.Replace("{DATABASE}", "postgres");
-        string connStringMyDb = connString.Replace("{DATABASE}", dbName);
+        public string ConnStringMyDb = connString.Replace("{DATABASE}", dbName);
 
         private static Seeder? _instance;
         public static Seeder Instance
@@ -51,7 +52,7 @@ namespace vina.Server
         }
         public async Task<int> DbSeed()
         {
-            var dBcs = new DBcs.DBcs(connStringMyDb);
+            var dBcs = new DBcs.DBcs(ConnStringMyDb);
             //create schema and data
             int ret = await dBcs.RunNonQueryAsync( await LoadScriptFromResource(seed_script));
             Console.Write($"Script {seed_script} executed.");
@@ -86,6 +87,62 @@ namespace vina.Server
             
 
         }
+        public async Task<string> GetClasses()
+        {
+/*
+    You can get all tables with:
+        select 
+            'select * from public.' || t.table_name || ';'
+        from
+            information_schema.tables t  
+        where 
+            t.table_schema = 'public' 
+            and 
+            table_type='BASE TABLE';
+*/
+            var dBcs = new DBcs.DBcs(ConnStringMyDb);
+            var classes = await dBcs.GetClassCodeString(
+    // Class represents one row, while List of classes
+    // represents table. Thats why is good practice to
+    // name classes in singular, and tables in plural
+    //
+    // Also it is recommended to add prefix to class names
+    // that represents items from db.
+    //  -makes you aware that this class represents data
+    //   row in db
+    //  -avoids name conflicts - in our quiz example, if 
+    //   we name "Question" item from table questions,
+    //   it will be in conflict with property "Question",
+    //   Which represents text of the question.
+    //
+    new[]
+    {
+        "DBCustomer",
+        "DBToken",
+        "DBTranslation",
+        "DBOrder",
+        "DBOrderItem",
+        "DBProduct",
+        "DBCountry",
+        "DBOrderStatus",
+        "DBCategory",
+    },
+                @"
+                select * from public.customers;
+                select * from public.tokens;
+                select * from public.translations;
+                select * from public.orders;
+                select * from public.order_items;
+                select * from public.products;
+                select * from public.countries;
+                select * from public.order_status;
+                select * from public.categories;
+                "
+
+            );
+            return classes;
+        }
+
     }
 
 }

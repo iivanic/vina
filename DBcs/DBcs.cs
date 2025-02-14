@@ -216,6 +216,7 @@ public class DBcs
 
 
         var ret = $"using System.ComponentModel.DataAnnotations.Schema;{Environment.NewLine}";
+        ret += $"using System.ComponentModel.DataAnnotations;{Environment.NewLine}";
 
         using var conn = CreateConnection();
         using var cmd = CreateCommand();

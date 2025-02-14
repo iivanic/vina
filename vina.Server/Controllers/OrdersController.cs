@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using vina.Server.Classes;
 
 namespace vina.Server.Controllers
 {
@@ -15,45 +16,24 @@ namespace vina.Server.Controllers
         }
 
         [HttpGet(Name = "GetOrders")]
-        public IEnumerable<WeatherForecast> GetOrders(string token, string language)
+        public IEnumerable<DBOrder> GetOrders(string token, string language)
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = "Freezing"
-            })
-            .ToArray();
+            return new List<DBOrder>();
         }
         [HttpGet(Name = "GetOrder")]
-        public WeatherForecast GetOrder(int orderId, string language)
+        public DBOrder GetOrder(int orderId, string language)
         {
-            return new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = "Freezing"
-            };
+           return new DBOrder();
         }
         [HttpGet(Name = "CreateOrder")]
-        public WeatherForecast CreateOrder(List<ShoppingBagItem> products, string language)
+        public DBOrder CreateOrder(List<ShoppingBagItem> products, string language)
         {
-            return new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = "Freezing"
-            };
+            return new DBOrder();
         }
         [HttpGet(Name = "CancelOrder")]
-        public WeatherForecast CancelOrder(int orderId, string language)
+        public DBOrder CancelOrder(int orderId, string language)
         {
-            return new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = "Freezing"
-            };
+            return new DBOrder();
         }
     }
 }

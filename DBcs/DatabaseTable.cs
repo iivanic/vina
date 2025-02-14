@@ -14,9 +14,13 @@ namespace DBcs
         public List<DatabaseTableRow> Rows { get; set; } = [];
         public List<DatabaseTableRow> PrimaryKeys { get; set; } = [];
         public List<DatabaseTableRow> ForeignKeys { get; set; } = [];
+        public string CreateSelectSingleText()
+        {
+            return $"select * from {TableName} where {CreateWhere()};";
+        }
         public string CreateSelectText()
         {
-            return $"select * from {TableName};";
+            return $"select * from {TableName} ;";
         }
         public string CreateUpdateText()
         {
@@ -86,6 +90,7 @@ namespace DBcs
 
             ret += $"\t// Not used by DBHelp directly{Environment.NewLine}";
             ret += $"\tpublic const string SelectText = \"{CreateSelectText()}\";{Environment.NewLine}";
+            ret += $"\tpublic const string SelectSingleText = \"{CreateSelectSingleText()}\";{Environment.NewLine}";
             ret += $"\tpublic const string UpdateText = \"{CreateUpdateText()}\";{Environment.NewLine}";
             ret += $"\tpublic const string InsertText = \"{CreateInsertText()}\";{Environment.NewLine}";
             ret += $"\tpublic const string DeleteText = \"{CreateDeleteText()}\";{Environment.NewLine}";

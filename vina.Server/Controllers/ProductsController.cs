@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using vina.Server.Classes;
 
 namespace vina.Server.Controllers
 {
@@ -15,25 +17,23 @@ namespace vina.Server.Controllers
         }
 
         [HttpGet(Name = "GetProducts")]
-        public IEnumerable<WeatherForecast> GetProducts()
+        public async Task<IEnumerable<DBProduct>> GetProducts()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = "Freezing"
-            })
-            .ToArray();
+            var dBcs = new DBcs.DBcs(Seeder.Instance.ConnStringMyDb);
+            var products = await dBcs.RunQueryAsync<DBProduct>(DBProduct.SelectText);
+            return products ?? [];
         }
         [HttpGet(Name = "GetProduct")]
-        public WeatherForecast GetProduct(int productId)
+        public async Task<DBProduct> GetProduct(int productId)
         {
-            return new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = "Freezing"
-            };
+            var dBcs = new DBcs.DBcs(Seeder.Instance.ConnStringMyDb);
+            var product = await dBcs.RunQuerySingleOrDefaultAsync<DBProduct>(DBProduct.SelectSingleText, new P { Id = productId });
+            return product ?? new DBProduct(); ;
+        }
+
+        class P
+        {
+            public int Id;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace vina.Server.Controllers
         
         }
         [HttpGet(Name = "Drop")]
-        public async Task DbDrop()
+        public void DbDrop()
         {
             lock (lockObject)
             {
@@ -65,34 +65,19 @@ namespace vina.Server.Controllers
 
 
         [HttpGet(Name = "GetToken")]
-        public WeatherForecast GetToken(string token)
+        public string GetToken(string token)
         {
-            return new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = "Freezing"
-            };
+            return "";
         }
         [HttpGet(Name = "GetMyData")]
-        public WeatherForecast GetMyData(string token, string language)
+        public string GetMyData(string token, string language)
         {
-            return new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = "Freezing"
-            };
+            return "";
         }
         [HttpGet(Name = "ForgetMe")]
-        public WeatherForecast ForgetMe(string token)
+        public bool ForgetMe(string token)
         {
-            return new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = "Freezing"
-            };
+            return true;
         }
 
     }
