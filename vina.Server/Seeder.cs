@@ -10,7 +10,15 @@ public class Seeder
             return _instance;
         }
     }
-    public string Seed()
+   public bool DbExists()
+    {
+        return false;
+    }
+    public string DbSeed()
+    {
+        return "Seeded";
+    }
+    public string DbDrop()
     {
         return "Seeded";
     }

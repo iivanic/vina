@@ -14,16 +14,27 @@ namespace vina.Server.Controllers
             _logger = logger;
         }
 
+#if DEBUG
         private static object lockObject = new object();
         [HttpGet(Name = "Seed")]
-        public string Seed(string token )
+        public string DbSeed()
         {
             lock (lockObject)
             {
-                return Seeder.Instance.Seed();
+                return Seeder.Instance.DbSeed();
             }
         
         }
+        [HttpGet(Name = "Drop")]
+        public string DbDrop()
+        {
+            lock (lockObject)
+            {
+                return Seeder.Instance.DbDrop();
+            }
+        
+        }
+#endif
         [HttpGet(Name = "GetToken")]
         public WeatherForecast GetToken(WeatherForecast token)
         {
