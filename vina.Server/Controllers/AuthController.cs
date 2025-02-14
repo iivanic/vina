@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace vina.Server.Controllers
@@ -17,32 +19,35 @@ namespace vina.Server.Controllers
 #if DEBUG
         private static object lockObject = new object();
         [HttpGet(Name = "Seed")]
-        public string DbSeed()
+        public async Task<string> DbSeed()
         {
             lock (lockObject)
             {
-                return Seeder.Instance.DbSeed();
+                return Seeder.Instance.DbSeed().GetAwaiter().GetResult();
             }
         
         }
         [HttpGet(Name = "Drop")]
-        public string DbDrop()
+        public async Task DbDrop()
         {
             lock (lockObject)
             {
-                return Seeder.Instance.DbDrop();
+                Seeder.Instance.DbDrop().GetAwaiter().GetResult();
+                return ;
             }
         
         }
 #endif
         [HttpGet(Name = "GetMyOptions")]
-        public SortedList<string,string> GetMyOptions(string token, string language)
+        public async Task<SortedList<string,string>> GetMyOptions(string token, string language)
         {
             var ret =  new SortedList<string, string>();
-#if DEBUG
-            if(Seeder.Instance.DbExists())
+
+            if (await Seeder.Instance.DbExists())
             {
+#if DEBUG
                 ret.Add("Drop Database", "auth/dbdrop");
+#endif
                 //isAdmin
                 ret.Add("Users", "auth/getusers");
                 ret.Add("Orders", "auth/getorders");
@@ -54,7 +59,7 @@ namespace vina.Server.Controllers
             {
                 ret.Add("Create Database", "auth/dbseed");
             }
-#endif
+
             return ret;
         }
 

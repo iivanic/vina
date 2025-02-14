@@ -1,7 +1,14 @@
+ using System.IO;
+ using System.Reflection;
 namespace vina.Server
 {
     public class Seeder
     {
+        public const string dbName = "vina_ivanic";
+        const string connString = @"Server=localhost;Port=5433;Username=n;Password=n;database={DATABASE};";
+        string connStringDefaultDb = connString.Replace("{DATABASE}", "postgres");
+        string connStringMyDb = connString.Replace("{DATABASE}", dbName);
+
         private static Seeder? _instance;
         public static Seeder Instance
         {
@@ -14,17 +21,73 @@ namespace vina.Server
                 return _instance;
             }
         }
-        public bool DbExists()
+        public async Task<bool> DbExists()
         {
-            return false;
+            //does our database already exists?
+            var dBcs = new DBcs.DBcs(connStringDefaultDb);
+            var o = await dBcs.RunScalarAsync(
+                $"Select count(*) from pg_database where datname='{dbName}' and datistemplate = false;\n");
+            return (o?.ToString() ?? "0") != "0";
         }
-        public string DbSeed()
+        public async Task DbReCreate()
         {
+            var dBcs = new DBcs.DBcs(connStringDefaultDb);
+            var dbExists = await DbExists();
+            //if doesnt exists, create database
+            if (!dbExists)
+            {
+                await dBcs.RunNonQueryAsync($"CREATE DATABASE {dbName};");
+                Console.Write($"Database {dbName} created.");
+            }
+            else
+            {
+                await dBcs.RunNonQueryAsync($"DROP DATABASE IF EXISTS {dbName} WITH(FORCE);");
+                Console.Write("Database deleted.");
+                await dBcs.RunNonQueryAsync($"CREATE DATABASE {dbName};");
+                Console.Write("Database created.");
+
+            }
+        }
+
+        public async Task<string> DbSeed()
+        {
+            var dBcs = new DBcs.DBcs(connStringMyDb);
+            //create schema and data
+            await dBcs.RunNonQueryAsync( await LoadScriptFromResource("db.pgsql"));
+            Console.Write("Schema created");
+        
+            
+            Console.Write("Database seeded.");
             return "Seeded";
         }
-        public string DbDrop()
+        public async Task DbDrop()
         {
-            return "Seeded";
+           var dBcs = new DBcs.DBcs(connStringDefaultDb);
+            var dbExists = await DbExists();
+            //if doesnt exists, create database
+            if (dbExists)
+            {
+                await dBcs.RunNonQueryAsync($"DROP DATABASE IF EXISTS {dbName} WITH(FORCE);");
+                Console.Write("Database deleted.");
+            }
+        }
+        public async Task<string> LoadScriptFromResource(string scriptName)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            string resourceName = assembly.GetManifestResourceNames()
+                .Single(str => str.EndsWith(scriptName));
+
+            using (Stream? stream = assembly.GetManifestResourceStream(resourceName))
+            {
+                if (stream == null)
+                {
+                    throw new InvalidOperationException($"Resource '{resourceName}' not found.");
+                }
+                using StreamReader reader = new StreamReader(stream);
+                return await reader.ReadToEndAsync();
+            }
+            
+
         }
     }
 

@@ -1,4 +1,5 @@
 using Scalar.AspNetCore;
+using vina.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,5 +28,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
+
+Seeder.Instance.DbReCreate().Wait();
+Seeder.Instance.DbSeed().Wait();
 
 app.Run();
