@@ -35,8 +35,35 @@ namespace vina.Server.Controllers
         
         }
 #endif
+        [HttpGet(Name = "GetMyOptions")]
+        public SortedList<string,string> GetMyOptions(string token, string language)
+        {
+            return new SortedList<string, string>();
+        }
+
+
         [HttpGet(Name = "GetToken")]
-        public WeatherForecast GetToken(WeatherForecast token)
+        public WeatherForecast GetToken(string token)
+        {
+            return new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = "Freezing"
+            };
+        }
+        [HttpGet(Name = "GetMyData")]
+        public WeatherForecast GetMyData(string token, string language)
+        {
+            return new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = "Freezing"
+            };
+        }
+        [HttpGet(Name = "ForgetMe")]
+        public WeatherForecast ForgetMe(string token)
         {
             return new WeatherForecast
             {

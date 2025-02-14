@@ -1,25 +1,31 @@
-public class Seeder
+namespace vina.Server
 {
-    private static Seeder? _instance;
-    public static Seeder Instance {
-        get {
-            if (_instance == null)
+    public class Seeder
+    {
+        private static Seeder? _instance;
+        public static Seeder Instance
+        {
+            get
             {
-                _instance = new Seeder();
+                if (_instance == null)
+                {
+                    _instance = new Seeder();
+                }
+                return _instance;
             }
-            return _instance;
+        }
+        public bool DbExists()
+        {
+            return false;
+        }
+        public string DbSeed()
+        {
+            return "Seeded";
+        }
+        public string DbDrop()
+        {
+            return "Seeded";
         }
     }
-   public bool DbExists()
-    {
-        return false;
-    }
-    public string DbSeed()
-    {
-        return "Seeded";
-    }
-    public string DbDrop()
-    {
-        return "Seeded";
-    }
+
 }

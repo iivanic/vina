@@ -26,7 +26,7 @@ namespace vina.Server.Controllers
             .ToArray();
         }
         [HttpGet(Name = "GetProduct")]
-        public WeatherForecast GGetProduct(int productId)
+        public WeatherForecast GetProduct(int productId)
         {
             return new WeatherForecast
             {
