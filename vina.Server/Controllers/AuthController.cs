@@ -54,7 +54,7 @@ namespace vina.Server.Controllers
             {
                 ret.Add("Create Database", "auth/dbseed");
             }
-#endif            
+#endif
             return ret;
         }
 
