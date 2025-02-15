@@ -8,7 +8,6 @@ namespace vina.Server.Controllers
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
-
         private readonly ILogger<ProductsController> _logger;
 
         public ProductsController(ILogger<ProductsController> logger)
