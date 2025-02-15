@@ -229,7 +229,7 @@ public class DBcs
         do
         {
 
-            if (!dr.Read()) continue;
+            //if (!dr.Read()) continue;
             DatabaseTable databaseTable = new DatabaseTable();
             databaseTables.Add(databaseTable);
 

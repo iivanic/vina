@@ -26,18 +26,11 @@ namespace vina.Server.Controllers
         public async Task<DBProduct?> GetProduct(int productId, string lang)
         {
             var dBcs = new DBcs.DBcs(Seeder.Instance.ConnStringMyDb);
-            var product = await dBcs.RunQuerySingleOrDefaultAsync<DBProduct>(DBProduct.SelectSingleText, new LangIdParam { Id = productId, Lang = lang  });
+            var product = await dBcs.RunQuerySingleOrDefaultAsync<DBProduct>(
+                DBProduct.SelectSingleText,
+                new {  Id = productId, Lang = lang } 
+            );
             return product ;
-        }
-
-        class LangIdParam
-        {
-            public int Id=0;
-            public string Lang="hr";
-        }
-        class LangParam
-        {
-            public string Lang="hr";
         }
     }
 }

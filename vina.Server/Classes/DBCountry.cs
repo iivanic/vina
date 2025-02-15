@@ -149,7 +149,7 @@ namespace vina.Server.Classes
                 and t2.lang = t3.lang
                 and t3.lang = @lang
                 and published = true
-                and id=@id;";
+                and p.id=@id;";
         public const string UpdateText = "update categories set name_translation_key=@name_translation_key where id=@id returning *;";
         public const string InsertText = "insert into categories (name_translation_key) values(@name_translation_key)  returning *;";
         public const string DeleteText = "delete from categories where id=@id;";
