@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using vina.Server.Classes;
+using vina.Server.Models;
 
 namespace vina.Server.Controllers
 {

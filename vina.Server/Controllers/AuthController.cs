@@ -10,34 +10,14 @@ namespace vina.Server.Controllers
     {
 
         private readonly ILogger<AuthController> _logger;
+        private readonly AuthService _authService;
 
-        public AuthController(ILogger<AuthController> logger)
+        public AuthController(ILogger<AuthController> logger, AuthService authService)
         {
             _logger = logger;
+            _authService = authService;
         }
 
-#if DEBUG
-        private static object lockObject = new object();
-        [HttpGet(Name = "Seed")]
-        public async Task<int> DbSeed()
-        {
-            lock (lockObject)
-            {
-                return Seeder.Instance.DbSeed().GetAwaiter().GetResult();
-            }
-        
-        }
-        [HttpGet(Name = "Drop")]
-        public void DbDrop()
-        {
-            lock (lockObject)
-            {
-                Seeder.Instance.DbDrop().GetAwaiter().GetResult();
-                return ;
-            }
-        
-        }
-#endif
         [HttpGet(Name = "GetMyOptions")]
         public async Task<SortedList<string,string>> GetMyOptions(string token, string language)
         {
@@ -68,16 +48,6 @@ namespace vina.Server.Controllers
         public string GetToken(string token)
         {
             return "";
-        }
-        [HttpGet(Name = "GetMyData")]
-        public string GetMyData(string token, string language)
-        {
-            return "";
-        }
-        [HttpGet(Name = "ForgetMe")]
-        public bool ForgetMe(string token)
-        {
-            return true;
         }
 
     }
