@@ -8,7 +8,6 @@ select
     published,
     category_id,
     t3.content as full_translation_key
-
 from products p
 left outer join translations t1 on p.name_translation_key = t1.key
 left outer join translations t2 on p.description_translation_key = t2.key

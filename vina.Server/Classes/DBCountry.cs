@@ -100,8 +100,14 @@ namespace vina.Server.Classes
         [Key]
         public int Id { get; set; }
         public string NameTranslationKey { get; set; } = string.Empty;
-        // Collection of class that references via FK
-        public List<DBTranslation> Products { get; set; } = new List<DBTranslation>();
+        public string DescriptionTranslationKey { get; set; } = string.Empty;
+        public string FullTranslationKey { get; set; } = string.Empty;
+        public double Price{ get; set; }
+        public int MaxOrder{ get; set; }
+        public bool Avalaible{ get; set; }
+        public bool Published{ get; set; }
+         public int CategoryId{ get; set; }
+  
         // Not used by DBHelp directly
         public const string SelectText = @"
                 select

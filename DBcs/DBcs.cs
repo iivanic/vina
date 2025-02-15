@@ -164,7 +164,7 @@ public class DBcs
     }
     public string GetDDLCodeString(Type type, string tableName)
     {
-        return GetDDLCodeString(new[] { type }, new[] { tableName }); 
+        return GetDDLCodeString(new[] { type }, new[] { tableName });
     }
 
     #endregion
@@ -322,7 +322,7 @@ public class DBcs
         return ret;
     }
 
-   
+
     #endregion
 
     #region advanced
@@ -517,6 +517,13 @@ public class DBcs
             }
         }
     }
+    private bool IsSimple(object o)
+    {
+        //if (o == null) return true;
+        Type type = o.GetType();
+        return type.IsPrimitive 
+        || type.Equals(typeof(string));
+    }
     private bool IsList(object o)
     {
         if (o == null) return false;
@@ -615,7 +622,7 @@ public class DBcs
         }
     }
 
-    
+
     #endregion
 
     #region helpers
@@ -627,25 +634,50 @@ public class DBcs
         cmd.CommandType = commandType;
         if (parameterObject != null)
         {
-            PropertyInfo[] propertyInfos = parameterObject.GetType().GetProperties();
+             
+            // if parameter is simple type
+            // and we need one parameter
+        
+            if(IsSimple(parameterObject))
+            {
+                if(parameters.Length == 1)
+                {   cmd.Parameters.Add(
+                        CreateParameter(cmd, parameters[0], parameterObject)
+                    );
+                    return cmd;
+                }
+            }
+            
+            //props and fields
+            var bindingAttr = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
+            var infos =
+                from it in parameterObject.GetType().GetMembers(bindingAttr)
+                where it is PropertyInfo || it is FieldInfo
+                select it;
             foreach (var p in parameters)
             {
                 //prepare param for comparison with obj props
                 var pPrepared = PrepareDbName(p);
 
                 //try to find appropriate properties
-                foreach (var pi in propertyInfos)
-                    if (pi.CanRead)
-                        if (PreparePropertyName(pi.Name) == pPrepared)
-                            //add param ..
+                foreach (var pi in infos)
+                    if (PreparePropertyName(pi.Name) == pPrepared)
+                        //add param ..
+                        if(pi is PropertyInfo)
                             cmd.Parameters.Add(
-                                CreateParameter(cmd, p, pi.GetValue(parameterObject))
+                                CreateParameter(cmd, p, ((PropertyInfo)pi).GetValue(parameterObject))
                             );
+                        else if(pi is FieldInfo)
+                        {
+                            cmd.Parameters.Add(
+                                CreateParameter(cmd, p, ((FieldInfo)pi).GetValue(parameterObject))
+                            );
+                        }
             }
+         
         }
         return cmd;
     }
-
     /// <summary>
     ///     Add code for converting more advanced types here.
     /// </summary>

@@ -7,7 +7,7 @@ namespace vina.Server
     {
         public const string seed_script = "db.pgsql";
         public const string dbName = "vina_ivanic_hr";
-        const string connString = @"Server=localhost;Port=5433;Username=n;Password=n;database={DATABASE};";
+        const string connString = @"Server=localhost;Port=5433;Username=postgres;Password=n;database={DATABASE};";
         string connStringDefaultDb = connString.Replace("{DATABASE}", "postgres");
         public string ConnStringMyDb = connString.Replace("{DATABASE}", dbName);
 

@@ -19,15 +19,15 @@ namespace vina.Server.Controllers
         public async Task<IEnumerable<DBProduct>> GetProducts(string lang)
         {
             var dBcs = new DBcs.DBcs(Seeder.Instance.ConnStringMyDb);
-            var products = await dBcs.RunQueryAsync<DBProduct>(DBProduct.SelectText,  new LangParam { Lang = lang });
+            var products = await dBcs.RunQueryAsync<DBProduct>(DBProduct.SelectText,  "hr");
             return products ?? [];
         }
         [HttpGet("{lang:alpha:minlength(2):maxlength(2)}/{productId:int:min(1)}")]
-        public async Task<DBProduct> GetProduct(int productId, string lang)
+        public async Task<DBProduct?> GetProduct(int productId, string lang)
         {
             var dBcs = new DBcs.DBcs(Seeder.Instance.ConnStringMyDb);
             var product = await dBcs.RunQuerySingleOrDefaultAsync<DBProduct>(DBProduct.SelectSingleText, new LangIdParam { Id = productId, Lang = lang  });
-            return product ?? new DBProduct(); ;
+            return product ;
         }
 
         class LangIdParam

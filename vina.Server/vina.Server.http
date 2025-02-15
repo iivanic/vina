@@ -1,11 +1,11 @@
 @Server_HostAddress = http://localhost:5186
 
 ###
-GET {{Server_HostAddress}}/products/getproducts
+GET {{Server_HostAddress}}/products/hr
 Accept: application/json
 
 ###
-GET {{Server_HostAddress}}/products/getproduct/1
+GET {{Server_HostAddress}}/products/hr/1
 Accept: application/json
 
 ###
