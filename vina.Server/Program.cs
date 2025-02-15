@@ -29,8 +29,8 @@ app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
 
-//Seeder.Instance.DbReCreate().GetAwaiter().GetResult();
-//Seeder.Instance.DbSeed().GetAwaiter().GetResult();
-var c = Seeder.Instance.GetClasses().GetAwaiter().GetResult();
+Seeder.Instance.DbReCreate().GetAwaiter().GetResult();
+Seeder.Instance.DbSeed().GetAwaiter().GetResult();
+//var c = Seeder.Instance.GetClasses().GetAwaiter().GetResult();
 
 app.Run();

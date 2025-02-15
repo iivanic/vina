@@ -115,8 +115,7 @@ namespace vina.Server
     //   it will be in conflict with property "Question",
     //   Which represents text of the question.
     //
-    new[]
-    {
+    [
         "DBCustomer",
         "DBToken",
         "DBTranslation",
@@ -126,7 +125,7 @@ namespace vina.Server
         "DBCountry",
         "DBOrderStatus",
         "DBCategory",
-    },
+    ],
                 @"
                 select * from public.customers;
                 select * from public.tokens;

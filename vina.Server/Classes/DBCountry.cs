@@ -75,12 +75,12 @@ namespace vina.Server.Classes
 		// property for refernced object
 		public int StatusId {get; set;}
 		[NotMapped]
-		public DBOrderStatus DBOrderStatus {get; set;}
+		public DBOrderStatus? DBOrderStatus {get; set;}
 		[ForeignKey("DBCountry")]
 		// property for refernced object
 		public int CountryId {get; set;}
 		[NotMapped]
-		public DBCountry DBCountry {get; set;}
+		public DBCountry? DBCountry {get; set;}
 		// Collection of class that references via FK
 		public List<DBOrderItem> OrderItems {get; set;} = new List<DBOrderItem>();
 		// Not used by DBHelp directly
@@ -101,12 +101,12 @@ namespace vina.Server.Classes
 		// property for refernced object
 		public int OrderId {get; set;}
 		[NotMapped]
-		public DBOrder DBOrder {get; set;}
+		public DBOrder? DBOrder {get; set;}
 		[ForeignKey("DBProduct")]
 		// property for refernced object
 		public int ProductId {get; set;}
 		[NotMapped]
-		public DBProduct DBProduct {get; set;}
+		public DBProduct? DBProduct {get; set;}
 		public double UnitPrice {get; set;}
 		public int Quantity {get; set;}
 		// Not used by DBHelp directly
@@ -123,8 +123,9 @@ namespace vina.Server.Classes
 	{
 		[Key]
 		public int Id {get; set;}
-		public string NameTranslationKey {get; set;} = string.Empty;
-		public string? DescriptionTranslationKey {get; set;}
+		public string NameK {get; set;} = string.Empty;
+		public string? DescriptionK {get; set;}
+		public string? FullK {get; set;}
 		public double Price {get; set;}
 		public int MaxOrder {get; set;}
 		public bool Avalaible {get; set;}
@@ -133,26 +134,25 @@ namespace vina.Server.Classes
 		// property for refernced object
 		public int CategoryId {get; set;}
 		[NotMapped]
-		public DBCategory DBCategory {get; set;}
-		public string? FullTranslationKey {get; set;}
+		public DBCategory? DBCategory {get; set;}
 		// Collection of class that references via FK
 		public List<DBOrderItem> OrderItems {get; set;} = new List<DBOrderItem>();
 		// Not used by DBHelp directly
 		public const string SelectText = @"
 					select
 						p.Id, 
-						t1.content as name_translation_key,
-						t2.content as description_translation_key,
+						t1.content as name_k,
+						t2.content as description_k,
+						t3.content as full_k,
 						p.price,
 						p.max_order,
 						avalaible,
 						published,
-						category_id,
-						t3.content as full_translation_key
+						category_id
 					from products p
-					left join translations t1 on p.name_translation_key = t1.key
-					left join translations t2 on p.description_translation_key = t2.key
-					left join translations t3 on p.full_translation_key = t3.key
+					left join translations t1 on p.name_k = t1.key
+					left join translations t2 on p.description_k = t2.key
+					left join translations t3 on p.full_k = t3.key
 					where 
 					t1.lang = t2.lang
 					and t2.lang = t3.lang
@@ -161,18 +161,18 @@ namespace vina.Server.Classes
 		public const string SelectSingleText =  @"
 					select
 						p.Id, 
-						t1.content as name_translation_key,
-						t2.content as description_translation_key,
+						t1.content as name_k,
+						t2.content as description_k,
+						t3.content as full_k,
 						p.price,
 						p.max_order,
 						avalaible,
 						published,
-						category_id,
-						t3.content as full_translation_key
+						category_id
 					from products p
-					left join translations t1 on p.name_translation_key = t1.key
-					left join translations t2 on p.description_translation_key = t2.key
-					left join translations t3 on p.full_translation_key = t3.key
+					left join translations t1 on p.name_k = t1.key
+					left join translations t2 on p.description_k = t2.key
+					left join translations t3 on p.full_k = t3.key
 					where 
 					t1.lang = t2.lang
 					and t2.lang = t3.lang
