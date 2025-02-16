@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using DBcs;
 using Microsoft.AspNetCore.Mvc;
 using vina.Server.Models;
 
@@ -9,27 +10,26 @@ namespace vina.Server.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ILogger<ProductsController> _logger;
-
-        public ProductsController(ILogger<ProductsController> logger)
+        private readonly IDBcs _dBcs;
+        public ProductsController(ILogger<ProductsController> logger, IDBcs dBcs)
         {
+            _dBcs = dBcs;
             _logger = logger;
         }
         [HttpGet("{lang:alpha:minlength(2):maxlength(2)}")]
-        public async Task<IEnumerable<DBProduct>> GetProducts(string lang)
+        public async Task<IEnumerable<TranslatedProduct>> GetProducts(string lang)
         {
-            var dBcs = new DBcs.DBcs(Seeder.Instance.ConnStringMyDb);
-            var products = await dBcs.RunQueryAsync<DBProduct>(DBProduct.SelectText,  "hr");
+            var products = await _dBcs.RunQueryAsync<TranslatedProduct>(TranslatedProduct.SelectText, lang);
             return products ?? [];
         }
         [HttpGet("{lang:alpha:minlength(2):maxlength(2)}/{productId:int:min(1)}")]
-        public async Task<DBProduct?> GetProduct(int productId, string lang)
+        public async Task<TranslatedProduct?> GetProduct(int productId, string lang)
         {
-            var dBcs = new DBcs.DBcs(Seeder.Instance.ConnStringMyDb);
-            var product = await dBcs.RunQuerySingleOrDefaultAsync<DBProduct>(
-                DBProduct.SelectSingleText,
-                new {  Id = productId, Lang = lang } 
+            var product = await _dBcs.RunQuerySingleOrDefaultAsync<TranslatedProduct>(
+                TranslatedProduct.SelectSingleText,
+                new { Id = productId, Lang = lang }
             );
-            return product ;
+            return product;
         }
     }
 }

@@ -10,7 +10,7 @@ using Npgsql;
 
 namespace DBcs;
 
-public class DBcs
+public class DBcs: IDBcs
 {
     /// <summary>
     /// in this case, override CreateDataSource()

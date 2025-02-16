@@ -18,10 +18,10 @@ namespace vina.Server.Controllers
             _authService = authService;
         }
 
-        [HttpGet(Name = "GetMyOptions")]
-        public async Task<SortedList<string,string>> GetMyOptions(string token, string language)
+        [HttpGet("{lang:alpha:minlength(2):maxlength(2)}/token/{token:alpha:minlength(6):maxlength(50)}")]
+        public async Task<SortedList<string, string>> MyOptions(string lang, string token)
         {
-            var ret =  new SortedList<string, string>();
+            var ret = new SortedList<string, string>();
 
             if (await Seeder.Instance.DbExists())
             {
@@ -44,8 +44,9 @@ namespace vina.Server.Controllers
         }
 
 
-        [HttpGet(Name = "GetToken")]
-        public string GetToken(string token)
+
+        [HttpGet("{lang:alpha:minlength(2):maxlength(2)}/email/{email:alpha:minlength(6):maxlength(50)}")]
+        public string Token(string lang, string email)
         {
             return "";
         }

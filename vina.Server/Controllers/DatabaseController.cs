@@ -25,7 +25,7 @@ namespace vina.Server.Controllers
             {
                 return Seeder.Instance.DbSeed().GetAwaiter().GetResult();
             }
-        
+
         }
         [HttpGet(Name = "Drop")]
         public void DbDrop()
@@ -33,9 +33,9 @@ namespace vina.Server.Controllers
             lock (lockObject)
             {
                 Seeder.Instance.DbDrop().GetAwaiter().GetResult();
-                return ;
+                return;
             }
-        
+
         }
 #endif
 

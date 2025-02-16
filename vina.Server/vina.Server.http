@@ -9,7 +9,9 @@ GET {{Server_HostAddress}}/products/de/3
 Accept: application/json
 
 ###
-GET {{Server_HostAddress}}/auth/
+GET {{Server_HostAddress}}/auth/hr/343
 Accept: application/json
 
 ###
+GET {{Server_HostAddress}}/auth/en/email/myemail@example.com
+Accept: application/json
