@@ -2,6 +2,7 @@ namespace vina.Server.Config
 {
     public class AppSettings
     {
+        public string DatabaseName { get; set; } = "";  
         public EmailSettings EmailSettings { get; set; }=new EmailSettings();
     }
     public class EmailSettings
