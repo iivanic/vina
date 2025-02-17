@@ -1,6 +1,8 @@
 {
-    "message.simple": "A simple message.",
-    "message.argument": "Hi, {name}! 👋",
+    "message.welcome": "Herzlich willkommen. Hier können Sie unsere Weine kaufen. Derzeit nehmen wir Bestellungen aus Kroatien, Österreich und Deutschland entgegen.",
+    "message.winemaking1": "Wein ist nicht nur ein landwirtschaftliches Produkt. Wein repräsentiert eine Lebensphilosophie, er ist ein Produkt mit Terroir.",
+    "message.winemaking2": "Unsere Weine werden mit Respekt für die Besonderheiten unserer Weinberge angebaut.",
+    "message.winemaking3": "Letztendlich drücken unsere Weine den Charakter unseres Weinbergs aus, einen Charakter, der beständiger ist als die Besonderheiten eines einzelnen Jahrgangs.</p>",
     "message.plural": "{count, plural, one {# item} other {# items}}",
     "message.select": "{gender, select, male {Mr} female {Mrs} other {User}}",
     "message.text-format": "Hi, <b>John</b>!",

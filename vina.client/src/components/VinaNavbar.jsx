@@ -28,12 +28,13 @@ function VinaNavbar( {locale, direction, onLocaleChange} ) {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Winery</Nav.Link>
+            <Nav.Link href="#terms">Terms</Nav.Link>
+            <Nav.Link href="#privacy">Privacy</Nav.Link>
+            <Nav.Link href="#contact">Contact</Nav.Link>
             <NavDropdown title={localeNames[locale]} id="basic-nav-dropdown">
-              <NavDropdown.Item onClick={(e)=>{onLocaleChange("hr")}}>Hrvatski / Croatian </NavDropdown.Item>
-              <NavDropdown.Item onClick={(e)=>{onLocaleChange("de")}}>Deutsch / German</NavDropdown.Item>
-              <NavDropdown.Item onClick={(e)=>{onLocaleChange("en")}}>English</NavDropdown.Item>
+              <NavDropdown.Item active={locale=="hr"} onClick={(e)=>{onLocaleChange("hr")}}>{localeNames["hr"]}</NavDropdown.Item>
+              <NavDropdown.Item active={locale=="de"} onClick={(e)=>{onLocaleChange("de")}}>{localeNames["de"]}</NavDropdown.Item>
+              <NavDropdown.Item active={locale=="en"} onClick={(e)=>{onLocaleChange("en")}}>{localeNames["en"]}</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action/3.4">
                 Separated link
@@ -41,22 +42,11 @@ function VinaNavbar( {locale, direction, onLocaleChange} ) {
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>
-        <Form inline="true">
-          <Row className="d-flex flex-row-reverse">
-            <Col xs="auto">
-              <Form.Control
-                type="text"
-                placeholder="Enter Your Email to Login"
-                className=" mr-sm-2"
-              />
-            </Col>
-            </Row>
-            <Row className="d-flex flex-row-reverse">
-            <Col xs="auto">
-              <Button type="submit">Login</Button>
-            </Col>
-          </Row>
-        </Form>
+        <Navbar.Collapse className="justify-content-end">
+          <Navbar.Text>
+            Projavite se za pregled narudžbi -> <Button type="submit">Prijava</Button>
+          </Navbar.Text>
+        </Navbar.Collapse>
       </Container>
     </Navbar>
   );

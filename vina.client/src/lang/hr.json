@@ -1,6 +1,8 @@
 {
-    "message.simple": "Dobrodošli.",
-    "message.argument": "Hi, {name}! 👋",
+    "message.welcome": "Dobrodošli. Ovdje možete kupiti naša vina.",
+    "message.winemaking1": "Vino nije samo poljoprivredni proizvod. Vino predstavlja životnu filozofiju, ono je proizvod s terroirom.",
+    "message.winemaking2": "Naša vina uzgajaju se poštujući posebnosti naših vinograda.",
+    "message.winemaking3": "U konačnici, naša vina izražavaju karakter našeg vinograda, karakter postojaniji od specifičnosti pojedine berbe.",
     "message.plural": "{count, plural, one {# item} other {# items}}",
     "message.select": "{gender, select, male {Mr} female {Mrs} other {User}}",
     "message.text-format": "Hi, <b>John</b>!",
