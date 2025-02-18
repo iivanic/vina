@@ -1,0 +1,27 @@
+.bg-footer {
+    background-color: #6B8E23;
+}
+
+/* unvisited link */
+.bg-footer a:link {
+    color: white;
+    font-weight: bold;
+}
+
+/* visited link */
+.bg-footer a:visited {
+    color: white;
+    font-weight: bold;
+}
+
+/* mouse over link */
+.bg-footer a:hover {
+    color: #4b3d6a;
+    font-weight: bold;
+}
+
+/* selected link */
+.bg-footer a:active {
+    color: white;
+    font-weight: bold;
+}

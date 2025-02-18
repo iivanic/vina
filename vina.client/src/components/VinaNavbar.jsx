@@ -8,22 +8,23 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-let localeNames={
+let localeNames = {
   "hr": "Hrvatski / Croatian",
   "de": "Deutsch / German",
   "en": "English",
 }
-function VinaNavbar( {locale, direction, onLocaleChange} ) {
+function VinaNavbar({ locale, direction, onLocaleChange }) {
   return (
+
     <Navbar fixed="top" expand="lg" className="bg-body-tertiary">
       <Container>
         <Navbar.Brand href="#home">
-        <img
-              src="logo.png"
-              width="90"
-              className="d-inline-block align-top"
-              alt="Logo"
-            />
+          <img
+            src="logo.png"
+            width="90"
+            className="d-inline-block align-top"
+            alt="Logo"
+          />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -32,9 +33,9 @@ function VinaNavbar( {locale, direction, onLocaleChange} ) {
             <Nav.Link href="#privacy">Privacy</Nav.Link>
             <Nav.Link href="#contact">Contact</Nav.Link>
             <NavDropdown title={localeNames[locale]} id="basic-nav-dropdown">
-              <NavDropdown.Item active={locale=="hr"} onClick={(e)=>{onLocaleChange("hr")}}>{localeNames["hr"]}</NavDropdown.Item>
-              <NavDropdown.Item active={locale=="de"} onClick={(e)=>{onLocaleChange("de")}}>{localeNames["de"]}</NavDropdown.Item>
-              <NavDropdown.Item active={locale=="en"} onClick={(e)=>{onLocaleChange("en")}}>{localeNames["en"]}</NavDropdown.Item>
+              <NavDropdown.Item active={locale == "hr"} onClick={(e) => { onLocaleChange("hr") }}>{localeNames["hr"]}</NavDropdown.Item>
+              <NavDropdown.Item active={locale == "de"} onClick={(e) => { onLocaleChange("de") }}>{localeNames["de"]}</NavDropdown.Item>
+              <NavDropdown.Item active={locale == "en"} onClick={(e) => { onLocaleChange("en") }}>{localeNames["en"]}</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action/3.4">
                 Separated link
@@ -44,11 +45,12 @@ function VinaNavbar( {locale, direction, onLocaleChange} ) {
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
-            Projavite se za pregled narudžbi -> <Button type="submit">Prijava</Button>
+            Prijavite se za pregled narudžbi -&gt; <Button type="submit">Prijava</Button>
           </Navbar.Text>
         </Navbar.Collapse>
       </Container>
     </Navbar>
+
   );
 }
 

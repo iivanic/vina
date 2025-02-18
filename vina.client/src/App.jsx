@@ -14,6 +14,8 @@ import './App.css';
 import VinaNavbar from './components/VinaNavbar';
 import Footer from './components/Footer';
 import Products from './components/Products';
+import Terms from './components/Terms';
+import Privacy from './components/Privacy';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -99,13 +101,13 @@ function App({ locale, direction, onLocaleChange }) {
                     </Col>
                 </Row>
                 <Row>
-                    <Col>
-                        <h3 id="terms">Terms</h3>
+                    <Col id="terms">
+                        <Terms locale={locale} direction={direction} onLocaleChange={onLocaleChange} />
                     </Col>
                 </Row>
                 <Row>
-                    <Col>
-                        <h3 id="privacy">Privacy</h3>
+                    <Col id="privacy">
+                    <Privacy locale={locale} direction={direction} onLocaleChange={onLocaleChange} />
                     </Col>
                 </Row>
 

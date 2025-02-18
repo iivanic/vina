@@ -9,7 +9,7 @@ import Col from 'react-bootstrap/Col';
 
 function Footer({ locale, direction, onLocaleChange }) {
     return (
-        <div className="p-3 mb-2 bg-secondary text-white">
+        <div className="p-3 mb-2 bg-footer text-white">
             <footer>
 
                 <Container>
