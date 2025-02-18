@@ -107,10 +107,9 @@ function App({ locale, direction, onLocaleChange }) {
                 </Row>
                 <Row>
                     <Col id="privacy">
-                    <Privacy locale={locale} direction={direction} onLocaleChange={onLocaleChange} />
+                        <Privacy locale={locale} direction={direction} onLocaleChange={onLocaleChange} />
                     </Col>
                 </Row>
-
 
             </Container >
             <Footer locale={locale} direction={direction} onLocaleChange={onLocaleChange} />
