@@ -1,5 +1,5 @@
- using System.IO;
- using System.Reflection;
+using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 namespace vina.Server
 {
@@ -31,7 +31,7 @@ namespace vina.Server
                 $"Select count(*) from pg_database where datname='{dbName}' and datistemplate = false;\n");
             return (o?.ToString() ?? "0") != "0";
         }
-        public async Task DbReCreate()
+        public async Task DbReCreateEmpty()
         {
             var dBcs = new DBcs.DBcs(connStringDefaultDb);
             var dbExists = await DbExists();
@@ -50,17 +50,50 @@ namespace vina.Server
 
             }
         }
-        public async Task<int> DbSeed()
+        public async Task<int> DbEnsureCratedAndSeed(WebApplication app)
         {
-            var dBcs = new DBcs.DBcs(ConnStringMyDb);
-            //create schema and data
-            int ret = await dBcs.RunNonQueryAsync( await LoadScriptFromResource(seed_script));
-            Console.Write($"Script {seed_script} executed.");
-            return ret;
+            using (var serviceScope = app.Services.CreateScope())
+            {
+                var services = serviceScope.ServiceProvider;
+                try
+                {
+                    var identityUser = services.GetRequiredService<UserManager<IdentityUser>>();
+                    var loginContext = services.GetRequiredService<LoginContext>();
+                    loginContext.Database.EnsureCreated();
+                    // Look for any students.
+                    if (context.Users.Any())
+                    {
+                        return 0;   // DB has been seeded
+                    }
+                    var users = new IdentityUser[]
+                    {
+                        new IdentityUser {UserName = "sally", Email = "sally@example.com"},
+                        new IdentityUser {UserName = "emily", Email = "emily@example.com"},
+                        new IdentityUser {UserName = "alberto", Email = "alberto@example.com"}
+                    };
+                    foreach (IdentityUser u in users)
+                    {
+                        await userManager.CreateAsync(u);
+                    }
+                    context.SaveChanges();
+
+                    var dBcs = new DBcs.DBcs(ConnStringMyDb);
+                    //create schema and data
+                    int ret = await dBcs.RunNonQueryAsync(await LoadScriptFromResource(seed_script));
+                    Console.Write($"Script {seed_script} executed.");
+                    return ret;
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred creating the DB.");
+                }
+            }
+
         }
         public async Task DbDrop()
         {
-           var dBcs = new DBcs.DBcs(connStringDefaultDb);
+            var dBcs = new DBcs.DBcs(connStringDefaultDb);
             var dbExists = await DbExists();
             //if doesnt exists, create database
             if (dbExists)
@@ -84,22 +117,22 @@ namespace vina.Server
                 using StreamReader reader = new StreamReader(stream);
                 return await reader.ReadToEndAsync();
             }
-            
+
 
         }
         public async Task<string> GetClasses()
         {
-/*
-    You can get all tables with:
-        select 
-            'select * from public.' || t.table_name || ';'
-        from
-            information_schema.tables t  
-        where 
-            t.table_schema = 'public' 
-            and 
-            table_type='BASE TABLE';
-*/
+            /*
+                You can get all tables with:
+                    select 
+                        'select * from public.' || t.table_name || ';'
+                    from
+                        information_schema.tables t  
+                    where 
+                        t.table_schema = 'public' 
+                        and 
+                        table_type='BASE TABLE';
+            */
             var dBcs = new DBcs.DBcs(ConnStringMyDb);
             var classes = await dBcs.GetClassCodeString(
     // Class represents one row, while List of classes

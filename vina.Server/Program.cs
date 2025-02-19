@@ -9,11 +9,31 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+// identity ----------------
+builder.Services.AddIdentityCore<IdentityUser>();
+builder.Services.AddEntityFrameworkStores<NPDataContext>();
+var UserType = builder.UserType;
+var provider = typeof(NPTokenProvider<>).MakeGenericType(UserType);
+builder.AddTokenProvider("NPTokenProvider", provider);
+services.AddDbContext<NPDataContext>(options =>
+    options.UseNpgsql(
+        (builder.Configuration.GetConnectionString("DefaultConnection") ?? "").Replace("{DATABASE}", builder.Configuration.GetSection("AppSettings").Get<AppSettings>()?.DatabaseName)
+    )
+);
+
+services.AddAuthentication(options =>
+{
+    options.DefaultScheme = IdentityConstants.ExternalScheme;
+});
+builder.Services.AddTransient<IdentityDbContext, NPDataContext>();
+// ----------------------------
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<AuthService>(); // Register AuthService for dependency injection
 builder.Services.AddScoped<EmailService>(); // 
+
 
 builder.Services.Configure<AppSettings>(
     builder.Configuration.GetSection("AppSettings"));
@@ -41,14 +61,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.Routing.Register<NoPasswordController>(app);
+
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
 
-Seeder.Instance.DbReCreate().GetAwaiter().GetResult();
-Seeder.Instance.DbSeed().GetAwaiter().GetResult();
+//Seeder.Instance.DbReCreateEmpty().GetAwaiter().GetResult();
+Seeder.Instance.DbEnsureCratedAndSeed(app).GetAwaiter().GetResult();
 //var c = Seeder.Instance.GetClasses().GetAwaiter().GetResult();
 
 app.Run();
