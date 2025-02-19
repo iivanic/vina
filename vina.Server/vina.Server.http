@@ -9,7 +9,7 @@ GET {{Server_HostAddress}}/products/de/3
 Accept: application/json
 
 ###
-GET {{Server_HostAddress}}/auth/hr/343
+GET {{Server_HostAddress}}/nopassword/info@vina-ivanic.hr
 Accept: application/json
 
 ###

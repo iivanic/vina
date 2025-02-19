@@ -7,6 +7,6 @@ public class NPTokenProviderOptions : DataProtectionTokenProviderOptions
     public NPTokenProviderOptions()
     {
         Name = "NPTokenProvider";
-        TokenLifespan = TimeSpan.FromMinutes(5);
+        TokenLifespan = TimeSpan.FromHours(4);
     }
 }

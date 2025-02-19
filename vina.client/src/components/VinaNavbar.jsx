@@ -1,4 +1,14 @@
 import { useState } from 'react';
+import {
+  useIntl,
+  IntlProvider,
+  FormattedMessage,
+  FormattedDate,
+  FormattedTime,
+  FormattedRelativeTime,
+  FormattedNumber,
+  FormattedList,
+} from "react-intl";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -20,6 +30,8 @@ function VinaNavbar({ locale, direction, onLocaleChange }) {
   const [show, setShow] = useState(false);
   const [value, setValue] = useState(),
     onInput = ({ target: { value } }) => setValue(value);
+
+  const intl = useIntl();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -44,7 +56,7 @@ function VinaNavbar({ locale, direction, onLocaleChange }) {
         <Container>
           <Navbar.Brand href="#home">
             <img
-              src="logo.png"
+              src="grb.png"
               width="90"
               className="d-inline-block align-top"
               alt="Logo"
@@ -53,9 +65,9 @@ function VinaNavbar({ locale, direction, onLocaleChange }) {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="#terms">Terms</Nav.Link>
-              <Nav.Link href="#privacy">Privacy</Nav.Link>
-              <Nav.Link href="#contact">Contact</Nav.Link>
+              <Nav.Link href="#terms"><FormattedMessage id="nav.terms" /></Nav.Link>
+              <Nav.Link href="#privacy"><FormattedMessage id="nav.privacy" /></Nav.Link>
+              <Nav.Link href="#contact"><FormattedMessage id="nav.contact" /></Nav.Link>
               <NavDropdown title={localeNames[locale]} id="basic-nav-dropdown">
                 <NavDropdown.Item active={locale == "hr"} onClick={(e) => { onLocaleChange("hr") }}>{localeNames["hr"]}</NavDropdown.Item>
                 <NavDropdown.Item active={locale == "de"} onClick={(e) => { onLocaleChange("de") }}>{localeNames["de"]}</NavDropdown.Item>
@@ -68,33 +80,32 @@ function VinaNavbar({ locale, direction, onLocaleChange }) {
             </Nav>
           </Navbar.Collapse>
           <Navbar.Collapse className="justify-content-end">
-            <Nav.Link onClick={handleShow}>Prijavite se za pregled narudžbi</Nav.Link>
+            <Nav.Link onClick={handleShow}><FormattedMessage id="nav.login" /></Nav.Link>
           </Navbar.Collapse>
         </Container>
       </Navbar>
 
       <Modal show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>
-          <Modal.Title>Login to Vina-Ivanic.Hr</Modal.Title>
+          <Modal.Title><FormattedMessage id="nav.login.header" /></Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form noValidate validated={validated} onSubmit={handleSubmit} id="LoginForm">
             <Form.Group className="mb-3" controlId="UserEmail">
-              <Form.Label>Email address</Form.Label><br/>
+              <Form.Label><FormattedMessage id="nav.login.email" /></Form.Label><br />
               <Form.Text >
-                    Na navedenu adresu poslat ćemo vam link koji vam omogućava pristup.
+                <FormattedMessage id="nav.login.email.desc" />
               </Form.Text>
               <InputGroup hasValidation>
                 <Form.Control
                   type="email"
-                  placeholder="name@example.com"
+                  placeholder={intl.formatMessage({ id: "nav.login.email.placeholder" })}
                   autoFocus
                   required
                   onChange={onInput}
                 />
-                
                 <Form.Control.Feedback type="invalid">
-                  Please enter your email address.
+                  <FormattedMessage id="nav.login.email.invalid" />
                 </Form.Control.Feedback>
               </InputGroup>
             </Form.Group>
@@ -102,10 +113,10 @@ function VinaNavbar({ locale, direction, onLocaleChange }) {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Cancel
+          <FormattedMessage id="nav.login.cancel" />
           </Button>
           <Button variant="primary" form="LoginForm" type="submit">
-            Login
+          <FormattedMessage id="nav.login.submit" />
           </Button>
         </Modal.Footer>
       </Modal>

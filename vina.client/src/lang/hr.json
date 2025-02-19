@@ -3,6 +3,21 @@
     "message.winemaking1": "Vino nije samo poljoprivredni proizvod. Vino predstavlja životnu filozofiju, ono je proizvod s terroirom.",
     "message.winemaking2": "Naša vina uzgajaju se poštujući posebnosti naših vinograda.",
     "message.winemaking3": "U konačnici, naša vina izražavaju karakter našeg vinograda, karakter postojaniji od specifičnosti pojedine berbe.",
+    "nav.terms": "Uvjeti korištenja",
+    "nav.privacy": "Privatnost",
+    "nav.contact": "Kontakt",
+    "nav.login": "Prijavite se za narudžbu",
+
+    "nav.login.header": "Prijava bez zaporke",
+    "nav.login.email": "Adresa e-pošte:",
+    "nav.login.email.desc": "Na navedenu adresu poslat ćemo Vam pristupni link.",
+    "nav.login.email.placeholder": "vasracun@vasemailserver.hr",    
+    "nav.login.email.invalid": "Unesite ispravnu adresu e-pošte.",
+    "nav.login.cancel": "Odustani",    
+    "nav.login.submit": "Prijavi se",
+
+ 
+
     "message.plural": "{count, plural, one {# item} other {# items}}",
     "message.select": "{gender, select, male {Mr} female {Mrs} other {User}}",
     "message.text-format": "Hi, <b>John</b>!",

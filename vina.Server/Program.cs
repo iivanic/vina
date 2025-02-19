@@ -21,7 +21,9 @@ string connectionString = (
 
 // ---------------identity ----------------
 var ic = builder.Services.AddIdentityCore<IdentityUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<NPDataContext>();
+    
 var UserType = ic.UserType;
 var provider = typeof(NPTokenProvider<>).MakeGenericType(UserType);
 ic.AddTokenProvider("NPTokenProvider", provider);
@@ -31,6 +33,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = IdentityConstants.ExternalScheme;
 });
+
 builder.Services.AddTransient<NPDataContext>(); // Register IdentityDbContext for dependency injection
 // -----------------------------------------
 
@@ -62,6 +65,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 

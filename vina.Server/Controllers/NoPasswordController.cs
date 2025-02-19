@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace vina.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("[controller]")]
     public class NoPasswordController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -16,16 +16,16 @@ namespace vina.Server.Controllers
             _userManager = userManager;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<String>> Login([FromQuery] string Email)
+        [HttpGet("{email:minlength(6):maxlength(150)}")]
+        public async Task<ActionResult<String>> Login(string email)
         {
             // Create or Fetch your user from the database
-            var User = await _userManager.FindByNameAsync(Email);
+            var User = await _userManager.FindByEmailAsync(email);
             if (User == null)
             {
                 User = new IdentityUser();
-                User.Email = Email;
-                User.UserName = Email;
+                User.Email = email;
+                User.UserName = email;
                 var IdentityResult = await _userManager.CreateAsync(User);
                 if (IdentityResult.Succeeded == false)
                 {
@@ -34,14 +34,16 @@ namespace vina.Server.Controllers
             }
 
             var Token = await _userManager.GenerateUserTokenAsync(User, "NPTokenProvider", "nopassword-for-the-win");
+            
+            Console.WriteLine(Token);
             return NoContent();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<String>> Verify([FromQuery] string Token, [FromQuery] string Email)
+    [HttpGet("{token:alpha:minlength(6):maxlength(50)}/{email:minlength(6):maxlength(150)}")]
+        public async Task<ActionResult<String>> Verify(string Token, string Email)
         {
             // Fetch your user from the database
-            var User = await _userManager.FindByNameAsync(Email);
+            var User = await _userManager.FindByEmailAsync(Email);
             if (User == null)
             {
                 return NotFound();
@@ -51,7 +53,7 @@ namespace vina.Server.Controllers
             if (IsValid)
             {
                 // TODO: Generate a bearer token
-                var BearerToken = "";
+                var BearerToken = Guid.NewGuid().ToString("N");
                 return BearerToken;
             }
             return Unauthorized();

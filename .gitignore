@@ -3,3 +3,6 @@ vina.client/obj\Debug//package.g.props
 .DS_Store
 .vs/
 node_modules/
+.vs/vina/v17/.futdcache.v2
+.vs/vina/v17/.suo
+.vs/vina/v17/DocumentLayout.json
