@@ -61,7 +61,7 @@ namespace vina.Server.Controllers
                DBTranslation.SelectKeyLangText, new {key="token_mail_body3", lang=lang}))?.Content + "</p>";
             mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
                DBTranslation.SelectKeyLangText, new {key="token_mail_signature", lang=lang}))?.Content + "</p>";
-            await _emailService.SendEmailAsync(_appSettings.EmailSettings.EmailSender, email, mailSubject?.Content, mailBody);
+            await _emailService.SendEmailAsync(_appSettings.EmailSettings.EmailSender, email, mailSubject?.Content??"", mailBody);
 
 
             var Token = await _userManager.GenerateUserTokenAsync(User, "NPTokenProvider", "nopassword-for-the-win");
