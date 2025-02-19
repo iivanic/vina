@@ -7,7 +7,6 @@
     "nav.privacy": "Privacy",
     "nav.contact": "Contact",
     "nav.login": "Login to order",
-
     "nav.login.header": "Passwordless Login",
     "nav.login.email": "Email address:",
     "nav.login.email.desc": "We will send you a access granting link to specified address.",

@@ -11,7 +11,9 @@ where TUser : IdentityUser
         IDataProtectionProvider dataProtectionProvider,
         IOptions<NPTokenProviderOptions> options, ILogger<NPTokenProvider<TUser>> logger)
         : base(dataProtectionProvider, options, logger)
-    { }
+    {
+        
+     }
 }
 
 public static class CustomIdentityBuilderExtensions

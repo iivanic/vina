@@ -7,7 +7,6 @@
     "nav.privacy": "Privatnost",
     "nav.contact": "Kontakt",
     "nav.login": "Prijavite se za narudžbu",
-
     "nav.login.header": "Prijava bez zaporke",
     "nav.login.email": "Adresa e-pošte:",
     "nav.login.email.desc": "Na navedenu adresu poslat ćemo Vam pristupni link.",
@@ -15,8 +14,6 @@
     "nav.login.email.invalid": "Unesite ispravnu adresu e-pošte.",
     "nav.login.cancel": "Odustani",    
     "nav.login.submit": "Prijavi se",
-
- 
 
     "message.plural": "{count, plural, one {# item} other {# items}}",
     "message.select": "{gender, select, male {Mr} female {Mrs} other {User}}",
