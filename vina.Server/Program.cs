@@ -7,26 +7,29 @@ using vina.Server.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string connectionString = (
+    builder.Configuration.GetConnectionString("DefaultConnection") ?? "")
+    .Replace(
+        "{DATABASE}",
+        builder.Configuration.GetSection("AppSettings").Get<AppSettings>()?.DatabaseName
+    );
+
 // Add services to the container.
 
-// identity ----------------
+// ---------------identity ----------------
 builder.Services.AddIdentityCore<IdentityUser>();
 builder.Services.AddEntityFrameworkStores<NPDataContext>();
 var UserType = builder.UserType;
 var provider = typeof(NPTokenProvider<>).MakeGenericType(UserType);
 builder.AddTokenProvider("NPTokenProvider", provider);
-services.AddDbContext<NPDataContext>(options =>
-    options.UseNpgsql(
-        (builder.Configuration.GetConnectionString("DefaultConnection") ?? "").Replace("{DATABASE}", builder.Configuration.GetSection("AppSettings").Get<AppSettings>()?.DatabaseName)
-    )
-);
+services.AddDbContext<NPDataContext>(options => options.UseNpgsql(connectionString));
 
 services.AddAuthentication(options =>
 {
     options.DefaultScheme = IdentityConstants.ExternalScheme;
 });
-builder.Services.AddTransient<IdentityDbContext, NPDataContext>();
-// ----------------------------
+builder.Services.AddTransient<IdentityDbContext, NPDataContext>(); // Register IdentityDbContext for dependency injection
+// -----------------------------------------
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -34,19 +37,11 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<AuthService>(); // Register AuthService for dependency injection
 builder.Services.AddScoped<EmailService>(); // 
 
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
-builder.Services.Configure<AppSettings>(
-    builder.Configuration.GetSection("AppSettings"));
-
-string connectionString = (builder.Configuration.GetConnectionString("DefaultConnection") ?? "").Replace("{DATABASE}", builder.Configuration.GetSection("AppSettings").Get<AppSettings>()?.DatabaseName);
 builder.Services.AddSingleton(connectionString);
 
-builder.Services.AddScoped<IDBcs>(provider => 
-{
-    var appSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
-    var connectionString = (builder.Configuration.GetConnectionString("DefaultConnection") ?? "").Replace("{DATABASE}", appSettings?.DatabaseName);
-    return new DBcs.DBcs(connectionString);
-});
+builder.Services.AddScoped<IDBcs>(provider => {return new DBcs.DBcs(connectionString);});
 var app = builder.Build();
 
 app.UseDefaultFiles();
