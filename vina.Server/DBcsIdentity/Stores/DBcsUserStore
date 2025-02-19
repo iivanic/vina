@@ -1,0 +1,140 @@
+// using Microsoft.AspNetCore.Identity;
+// using System.Threading;
+// using System.Threading.Tasks;
+// using vina.Server.Identity.Interfaces;
+// using Microsoft.AspNetCore.Identity;
+// using System;
+// using System.Threading.Tasks;
+// using System.Threading;
+// using DBcs;
+
+// namespace vina.Server.Identity.DBcsStores
+// {
+//     /// <summary>
+//     /// This store is only partially implemented. It supports user creation and find methods.
+//     /// </summary>
+//     public class DBcsUserStore : IUserStore<IdentityUser>, 
+//         IUserPasswordStore<IdentityUser>
+//     {
+//         private readonly DBcs _dbcs;
+
+//         public DBcsUserStore(DBcs dbcs)
+//         {
+//             _dbcs = dbcs;
+//         }
+        
+//         #region createuser
+//         public async Task<IdentityResult> CreateAsync(IdentityUser user, 
+//             CancellationToken cancellationToken = default(CancellationToken))
+//         {
+//             cancellationToken.ThrowIfCancellationRequested();
+//             if (user == null) throw new ArgumentNullException(nameof(user));
+
+//             return await _dbcs.CreateAsync(user);
+//         }
+//         #endregion
+
+//         public async Task<IdentityResult> DeleteAsync(IdentityUser user, 
+//             CancellationToken cancellationToken = default(CancellationToken))
+//         {
+//             cancellationToken.ThrowIfCancellationRequested();
+//             if (user == null) throw new ArgumentNullException(nameof(user));
+
+//             return await _dbcs.DeleteAsync(user);
+
+//         }
+
+//         public void Dispose()
+//         {
+//         }
+
+//         public async Task<IdentityUser> FindByIdAsync(string userId, 
+//             CancellationToken cancellationToken = default(CancellationToken))
+//         {
+//             cancellationToken.ThrowIfCancellationRequested();
+//             if (userId == null) throw new ArgumentNullException(nameof(userId));
+//             Guid idGuid;
+//             if(!Guid.TryParse(userId, out idGuid))
+//             {
+//                 throw new ArgumentException("Not a valid Guid id", nameof(userId));
+//             }
+
+//             return await _dbcs.FindByIdAsync(idGuid);
+
+//         }
+
+//         public async Task<IdentityUser> FindByNameAsync(string userName, 
+//             CancellationToken cancellationToken = default(CancellationToken))
+//         {
+//             cancellationToken.ThrowIfCancellationRequested();
+//             if (userName == null) throw new ArgumentNullException(nameof(userName));
+
+//             return await _dbcs.FindByNameAsync(userName);
+//         }
+
+//         public Task<string> GetNormalizedUserNameAsync(IdentityUser user, CancellationToken cancellationToken)
+//         {
+//             throw new NotImplementedException();
+//         }
+
+//         public Task<string> GetPasswordHashAsync(IdentityUser user, CancellationToken cancellationToken)
+//         {
+//             cancellationToken.ThrowIfCancellationRequested();
+//             if (user == null) throw new ArgumentNullException(nameof(user));
+
+//             return Task.FromResult(user.PasswordHash);
+//         }
+
+//         public Task<string> GetUserIdAsync(IdentityUser user, CancellationToken cancellationToken)
+//         {
+//             cancellationToken.ThrowIfCancellationRequested();
+//             if (user == null) throw new ArgumentNullException(nameof(user));
+
+//             return Task.FromResult(user.Id.ToString());
+//         }
+
+//         public Task<string> GetUserNameAsync(IdentityUser user, CancellationToken cancellationToken)
+//         {
+//             cancellationToken.ThrowIfCancellationRequested();
+//             if (user == null) throw new ArgumentNullException(nameof(user));
+
+//             return Task.FromResult(user.UserName);
+//         }
+
+//         public Task<bool> HasPasswordAsync(IdentityUser user, CancellationToken cancellationToken)
+//         {
+//             throw new NotImplementedException();
+//         }
+
+//         public Task SetNormalizedUserNameAsync(IdentityUser user, string normalizedName, CancellationToken cancellationToken)
+//         {
+//             cancellationToken.ThrowIfCancellationRequested();
+//             if (user == null) throw new ArgumentNullException(nameof(user));
+//             if (normalizedName == null) throw new ArgumentNullException(nameof(normalizedName));
+
+//             user.NormalizedUserName = normalizedName;
+//             return Task.FromResult<object>(null);
+//         }
+
+//         public Task SetPasswordHashAsync(IdentityUser user, string passwordHash, CancellationToken cancellationToken)
+//         {
+//             cancellationToken.ThrowIfCancellationRequested();
+//             if (user == null) throw new ArgumentNullException(nameof(user));
+//             if (passwordHash == null) throw new ArgumentNullException(nameof(passwordHash));
+
+//             user.PasswordHash = passwordHash;
+//             return Task.FromResult<object>(null);
+
+//         }
+
+//         public Task SetUserNameAsync(IdentityUser user, string userName, CancellationToken cancellationToken)
+//         {
+//             throw new NotImplementedException();
+//         }
+
+//         public Task<IdentityResult> UpdateAsync(IdentityUser user, CancellationToken cancellationToken)
+//         {
+//             throw new NotImplementedException();
+//         }
+//     }
+// }

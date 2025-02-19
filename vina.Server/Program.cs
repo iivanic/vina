@@ -25,7 +25,7 @@ var ic = builder.Services.AddIdentityCore<IdentityUser>()
 var UserType = ic.UserType;
 var provider = typeof(NPTokenProvider<>).MakeGenericType(UserType);
 ic.AddTokenProvider("NPTokenProvider", provider);
-builder.Services.AddDbContext<NPDataContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<NPDataContext>(options => options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention());
 
 builder.Services.AddAuthentication(options =>
 {
@@ -67,7 +67,7 @@ app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
 
-//Seeder.Instance.DbReCreateEmpty().GetAwaiter().GetResult();
+Seeder.Instance.DbReCreateEmpty().GetAwaiter().GetResult();
 Seeder.Instance.DbEnsureCratedAndSeed(app).GetAwaiter().GetResult();
 //var c = Seeder.Instance.GetClasses().GetAwaiter().GetResult();
 

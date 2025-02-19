@@ -1,3 +1,4 @@
+using System.Data.SqlTypes;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -53,13 +54,16 @@ namespace vina.Server
         }
         public async Task<int> DbEnsureCratedAndSeed(WebApplication app)
         {
+            const string AdminRole="Housekeeper";
+
             int ret=0;
             using (var serviceScope = app.Services.CreateScope())
             {
                 var services = serviceScope.ServiceProvider;
                 try
                 {
-                    var identityUser = services.GetRequiredService<UserManager<IdentityUser>>();
+                    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     var context = services.GetRequiredService<NPDataContext>();
                     context.Database.EnsureCreated();
                     // Look for any students.
@@ -69,14 +73,22 @@ namespace vina.Server
                     }
                     var users = new IdentityUser[]
                     {
-                        new IdentityUser {UserName = "sally", Email = "sally@example.com"},
-                        new IdentityUser {UserName = "emily", Email = "emily@example.com"},
-                        new IdentityUser {UserName = "alberto", Email = "alberto@example.com"}
+                        new IdentityUser {UserName = "Igor", Email = "info@vina-ivanic.hr"},
+                        new IdentityUser {UserName = "Alberto", Email = "alberto@example.net"},
                     };
                     foreach (IdentityUser u in users)
                     {
-                        await identityUser.CreateAsync(u);
+                        await userManager.CreateAsync(u);
                     }
+                    var roles = new IdentityRole[]
+                    {
+                        new IdentityRole {Name = AdminRole, NormalizedName =AdminRole.ToLower()},
+                    };
+                    foreach (IdentityRole r in roles)
+                    {
+                        await roleManager.CreateAsync(r);
+                    }
+                    _ = userManager.AddToRoleAsync(users[0], AdminRole);
                     context.SaveChanges();
 
                     var dBcs = new DBcs.DBcs(ConnStringMyDb);
