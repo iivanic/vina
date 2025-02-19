@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using vina.Server.Models;
 using DBcs;
 using vina.Server.Config;
+using Microsoft.AspNetCore.Http.Extensions;
 namespace vina.Server.Controllers
 {
     [ApiController]
@@ -33,11 +34,11 @@ namespace vina.Server.Controllers
         {
             var accept_lang = this.Request.Headers.AcceptLanguage;
             var lang = "en";
-            if(accept_lang.Count > 0)
+            if (accept_lang.Count > 0)
             {
                 lang = accept_lang[0];
             }
-           
+
             // Create or Fetch your user from the database
             var User = await _userManager.FindByEmailAsync(email);
             if (User == null)
@@ -51,27 +52,33 @@ namespace vina.Server.Controllers
                     return BadRequest();
                 }
             }
-            var mailSubject =  await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
-               DBTranslation.SelectKeyLangText, new {key="token_mail_subject", lang=lang});
-            var mailBody = "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
-               DBTranslation.SelectKeyLangText, new {key="token_mail_body1", lang=lang}))?.Content+ "</p>";
-            mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
-               DBTranslation.SelectKeyLangText, new {key="token_mail_body2", lang=lang}))?.Content + "</p>";
-            mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
-               DBTranslation.SelectKeyLangText, new {key="token_mail_body3", lang=lang}))?.Content + "</p>";
-            mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
-               DBTranslation.SelectKeyLangText, new {key="token_mail_signature", lang=lang}))?.Content + "</p>";
-            await _emailService.SendEmailAsync(_appSettings.EmailSettings.EmailSender, email, mailSubject?.Content??"", mailBody);
-
-
             var Token = await _userManager.GenerateUserTokenAsync(User, "NPTokenProvider", "nopassword-for-the-win");
             await _userManager.SetAuthenticationTokenAsync(User, "NPTokenProvider", "nopassword-for-the-win", Token);
             Console.WriteLine(Token);
+
+            var mailSubject = await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
+                DBTranslation.SelectKeyLangText, new { key = "token_mail_subject", lang = lang });
+            var mailBody = "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
+                DBTranslation.SelectKeyLangText, new { key = "token_mail_body1", lang = lang }))?.Content + "</p>";
+            mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
+                DBTranslation.SelectKeyLangText, new { key = "token_mail_body2", lang = lang }))?.Content + "</p>";
+            mailBody += $"<p><a href=\"{Request.Scheme}://{Request.Host}/{Token}/{email}\">{(await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
+                DBTranslation.SelectKeyLangText, new { key = "token_mail_click_here", lang = lang }))?.Content}</a></p>";
+
+            mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
+                DBTranslation.SelectKeyLangText, new { key = "token_mail_body3", lang = lang }))?.Content + "</p>";
+            mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
+                DBTranslation.SelectKeyLangText, new { key = "token_mail_signature", lang = lang }))?.Content + "</p>";
+
+            await _emailService.SendEmailAsync(_appSettings.EmailSettings.EmailSender, email, mailSubject?.Content ?? "", mailBody);
+
+
+
             //send email with token
             return NoContent();
         }
 
-    [HttpGet("{token:alpha:minlength(6):maxlength(50)}/{email:minlength(6):maxlength(150)}")]
+        [HttpGet("{token:alpha:minlength(6):maxlength(50)}/{email:minlength(6):maxlength(150)}")]
         public async Task<ActionResult<String>> Verify(string Token, string Email)
         {
             // Fetch your user from the database
@@ -95,13 +102,13 @@ namespace vina.Server.Controllers
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public async  Task RequestZohoAuthorization (string code)
+        public async Task RequestZohoAuthorization(string code)
         {
             //GET
             //https://accounts.zoho.com/oauth/v2/auth?{client_id}&response_type==code&redirect_uri={redirect_uri}&scope={scope}&access_type={offline or online}
             return;
         }
-        public async Task RequestZohoAuthorizationCallback (string code)
+        public async Task RequestZohoAuthorizationCallback(string code)
         {
             /*
             Sample response format of the URL in which authorization code is received:
@@ -112,7 +119,7 @@ namespace vina.Server.Controllers
 
             https://zylker.com/redirect?code=1000.*******77&location=us&accounts-server=https%3A%2F%2Faccounts.zoho.com
             */
-            return ;
+            return;
         }
         public async Task ExchangeAuthorizationCodeForAccessToken()
         {
@@ -150,20 +157,20 @@ namespace vina.Server.Controllers
         }
         public async Task RenewAccessToken()
         {
-        //POST
-        //https://accounts.zoho.com/oauth/v2/token?refresh_token={refresh_token}&grant_type=refresh_token&client_id={client_id}&client_secret={client_secret}
-        /*
-        Sample response format:
-        {
-        "access_token": "{new_access_token}",
-        "expires_in": 3600,
-        "api_domain": "https://www.zohoapis.com",
-        "token_type": "Bearer"
+            //POST
+            //https://accounts.zoho.com/oauth/v2/token?refresh_token={refresh_token}&grant_type=refresh_token&client_id={client_id}&client_secret={client_secret}
+            /*
+            Sample response format:
+            {
+            "access_token": "{new_access_token}",
+            "expires_in": 3600,
+            "api_domain": "https://www.zohoapis.com",
+            "token_type": "Bearer"
+            }
+            */
         }
-        */
-        }
-        
+
     }
-        
-    
+
+
 }
