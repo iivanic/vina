@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace NoPasswordProject.Controllers
+namespace vina.Server.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+namespace vina.Server;
 public class NPTokenProvider<TUser> : DataProtectorTokenProvider<TUser>
 where TUser : IdentityUser
 {

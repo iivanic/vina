@@ -1,6 +1,7 @@
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Identity;
 namespace vina.Server
 {
     public class Seeder
@@ -52,18 +53,19 @@ namespace vina.Server
         }
         public async Task<int> DbEnsureCratedAndSeed(WebApplication app)
         {
+            int ret=0;
             using (var serviceScope = app.Services.CreateScope())
             {
                 var services = serviceScope.ServiceProvider;
                 try
                 {
                     var identityUser = services.GetRequiredService<UserManager<IdentityUser>>();
-                    var loginContext = services.GetRequiredService<LoginContext>();
-                    loginContext.Database.EnsureCreated();
+                    var context = services.GetRequiredService<NPDataContext>();
+                    context.Database.EnsureCreated();
                     // Look for any students.
                     if (context.Users.Any())
                     {
-                        return 0;   // DB has been seeded
+                        return ret;   // DB has been seeded
                     }
                     var users = new IdentityUser[]
                     {
@@ -73,13 +75,13 @@ namespace vina.Server
                     };
                     foreach (IdentityUser u in users)
                     {
-                        await userManager.CreateAsync(u);
+                        await identityUser.CreateAsync(u);
                     }
                     context.SaveChanges();
 
                     var dBcs = new DBcs.DBcs(ConnStringMyDb);
                     //create schema and data
-                    int ret = await dBcs.RunNonQueryAsync(await LoadScriptFromResource(seed_script));
+                     ret = await dBcs.RunNonQueryAsync(await LoadScriptFromResource(seed_script));
                     Console.Write($"Script {seed_script} executed.");
                     return ret;
                 }
@@ -89,6 +91,8 @@ namespace vina.Server
                     logger.LogError(ex, "An error occurred creating the DB.");
                 }
             }
+
+            return ret;
 
         }
         public async Task DbDrop()

@@ -1,7 +1,10 @@
 using DBcs;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Scalar.AspNetCore;
 using vina.Server;
+using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 using vina.Server.Config;
 using vina.Server.Controllers;
 
@@ -17,18 +20,18 @@ string connectionString = (
 // Add services to the container.
 
 // ---------------identity ----------------
-builder.Services.AddIdentityCore<IdentityUser>();
-builder.Services.AddEntityFrameworkStores<NPDataContext>();
-var UserType = builder.UserType;
+var ic = builder.Services.AddIdentityCore<IdentityUser>()
+    .AddEntityFrameworkStores<NPDataContext>();
+var UserType = ic.UserType;
 var provider = typeof(NPTokenProvider<>).MakeGenericType(UserType);
-builder.AddTokenProvider("NPTokenProvider", provider);
-services.AddDbContext<NPDataContext>(options => options.UseNpgsql(connectionString));
+ic.AddTokenProvider("NPTokenProvider", provider);
+builder.Services.AddDbContext<NPDataContext>(options => options.UseNpgsql(connectionString));
 
-services.AddAuthentication(options =>
+builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = IdentityConstants.ExternalScheme;
 });
-builder.Services.AddTransient<IdentityDbContext, NPDataContext>(); // Register IdentityDbContext for dependency injection
+builder.Services.AddTransient<NPDataContext>(); // Register IdentityDbContext for dependency injection
 // -----------------------------------------
 
 builder.Services.AddControllers();
@@ -56,7 +59,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.Routing.Register<NoPasswordController>(app);
+app.UseRouting();
 
 app.UseAuthorization();
 

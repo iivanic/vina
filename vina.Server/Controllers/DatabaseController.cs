@@ -18,15 +18,6 @@ namespace vina.Server.Controllers
 
 #if DEBUG
         private static object lockObject = new object();
-        [HttpGet(Name = "Seed")]
-        public async Task<int> DbSeed()
-        {
-            lock (lockObject)
-            {
-                return Seeder.Instance.DbSeed().GetAwaiter().GetResult();
-            }
-
-        }
         [HttpGet(Name = "Drop")]
         public void DbDrop()
         {
