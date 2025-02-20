@@ -10,7 +10,7 @@
     "nav.login.header": "Prijava bez zaporke",
     "nav.login.email": "Adresa e-pošte:",
     "nav.login.email.desc": "Na navedenu adresu poslat ćemo Vam pristupni link.",
-    "nav.login.email.placeholder": "vasracun@vasemailserver.hr",    
+    "nav.login.email.placeholder": "vašračun@poslužitelj.hr",    
     "nav.login.email.invalid": "Unesite ispravnu adresu e-pošte.",
     "nav.login.cancel": "Odustani",    
     "nav.login.submit": "Prijavi se",
