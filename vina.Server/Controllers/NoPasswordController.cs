@@ -84,6 +84,23 @@ namespace vina.Server.Controllers
                 return BadRequest();
 #endif
             }
+            if(zoho_email.AccessTokenValidUntil < DateTime.UtcNow || zoho_email.AccessToken == null)
+            {
+                if(zoho_email.RefreshToken == null )
+                {
+                    // we need to RequestZohoAuthorization 
+                    await ExchangeAuthorizationCodeForAccessToken(zoho_email);
+                    // waiting for callback, nothing to do...
+                    return Ok();
+                }
+                else
+                {
+                    if (zoho_email.AccessTokenValidUntil<DateTime.UtcNow.AddMinutes(-15))
+                    {
+                        await RenewAccessToken(zoho_email);
+                    }
+                }
+            }
             await _emailService.SendEmailAsync(
                 zoho_email.AccessToken,
                 _appSettings.EmailSettings.EmailSender, email, mailSubject?.Content ?? "", mailBody);
@@ -236,7 +253,7 @@ namespace vina.Server.Controllers
             */
         }
 
-        public async Task RenewAccessToken()
+        public async Task RenewAccessToken(DBZohoMail zoho_email)
         {
             //POST
             //https://accounts.zoho.com/oauth/v2/token?refresh_token={refresh_token}&grant_type=refresh_token&client_id={client_id}&client_secret={client_secret}
