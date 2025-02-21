@@ -73,7 +73,7 @@ namespace vina.Server.Controllers
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_signature", lang = lang }))?.Content + "</p>";
 
             var zoho_email = await _dBcs.RunQuerySingleOrDefaultAsync<DBZohoMail>(DBZohoMail.SelectSingleText, 1);
-            if (zoho_email != null)
+            if (zoho_email == null)
             {
 #if DEBUG
                 // we need to RequestZohoAuthorization 
@@ -127,7 +127,7 @@ namespace vina.Server.Controllers
                 query["client_id"] = _appSettings.EmailSettings.ClientId;
                 query["response_type"] = "code";
                 query["redirect_uri"] = _appSettings.EmailSettings.RedirectUri;
-                query["scope"] = "ZohoMail.accounts.READ";
+                query["scope"] = "ZohoMail.messages.CREATE";
                 query["access_type"] = "offline";
 
                 var uriBuilder = new UriBuilder("https://accounts.zoho.com/oauth/v2/auth")
@@ -143,6 +143,7 @@ namespace vina.Server.Controllers
                 }
                 else
                 {
+                    Console.WriteLine($"Open link: {response.RequestMessage?.RequestUri}");
                     return StatusCode((int)response.StatusCode, response.ReasonPhrase);
                 }
             }
@@ -158,7 +159,7 @@ namespace vina.Server.Controllers
         [HttpGet("zohoredirect")]
         public async Task RequestZohoAuthorizationCallback([FromQuery]string code, [FromQuery]string location, [FromQuery(Name="accounts-server") ]string accounts_server )
         {
-
+            Console.WriteLine($"code: {code}, location: {location}, accounts_server: {accounts_server}");
             /*
             Sample response format of the URL in which authorization code is received:
 
@@ -174,13 +175,25 @@ namespace vina.Server.Controllers
                 zoho_email = new DBZohoMail();
                 zoho_email.Id = 1;
                 zoho_email.AuthorizationCode = code;
+                zoho_email.AuthorizationLocation = location;
+                zoho_email.AuthorizationAccountsServer = accounts_server;
                 zoho_email.AuthorizationCodeTimestamp = DateTime.UtcNow;
+                zoho_email.AccessTokenExpiresIn=0;
+                zoho_email.AccessTokenTimestamp=DateTime.MinValue;
+                zoho_email.AccessTokenValidUntil=DateTime.MinValue;
+
                 await _dBcs.RunNonQueryAsync(DBZohoMail.InsertText, zoho_email);
             }
             else
-            {
+            {   
+                zoho_email.AuthorizationLocation = location;
+                zoho_email.AuthorizationAccountsServer = accounts_server;
                 zoho_email.AuthorizationCode = code;
                 zoho_email.AuthorizationCodeTimestamp = DateTime.UtcNow;
+                zoho_email.AccessTokenExpiresIn=0;
+                zoho_email.AccessTokenTimestamp=DateTime.MinValue;
+                zoho_email.AccessTokenValidUntil=DateTime.MinValue;
+
                 await _dBcs.RunNonQueryAsync(DBZohoMail.UpdateText, zoho_email);
             }
           //  await  ExchangeAuthorizationCodeForAccessToken(zoho_email);

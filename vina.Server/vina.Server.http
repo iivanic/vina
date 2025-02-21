@@ -1,4 +1,4 @@
-@Server_HostAddress = https://localhost:7057
+@Server_HostAddress = http://localhost:5186
 
 ###
 GET {{Server_HostAddress}}/products/hr

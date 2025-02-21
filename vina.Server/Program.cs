@@ -71,8 +71,8 @@ app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
 
-//Seeder.Instance.DbReCreateEmpty().GetAwaiter().GetResult();
-//Seeder.Instance.DbEnsureCratedAndSeed(app).GetAwaiter().GetResult();
+Seeder.Instance.DbReCreateEmpty().GetAwaiter().GetResult();
+Seeder.Instance.DbEnsureCratedAndSeed(app).GetAwaiter().GetResult();
 //var c = Seeder.Instance.GetClasses(["DBZohoMail"],"select * from public.zoho_mail").GetAwaiter().GetResult();
 
 app.Run();

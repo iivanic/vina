@@ -97,6 +97,8 @@ public class DBcs: IDBcs
 
             ret = t;
         }
+        else 
+            return default(T);
         return ret;
     }
 
