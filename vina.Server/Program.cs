@@ -44,7 +44,7 @@ builder.Services.AddScoped<AuthService>(); // Register AuthService for dependenc
 builder.Services.AddScoped<EmailService>(); // 
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-
+builder.Services.AddSingleton<AppSettings>();
 builder.Services.AddSingleton(connectionString);
 
 builder.Services.AddScoped<IDBcs>(provider => {return new DBcs.DBcs(connectionString);});
@@ -71,8 +71,8 @@ app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
 
-Seeder.Instance.DbReCreateEmpty().GetAwaiter().GetResult();
-Seeder.Instance.DbEnsureCratedAndSeed(app).GetAwaiter().GetResult();
-//var c = Seeder.Instance.GetClasses().GetAwaiter().GetResult();
+//Seeder.Instance.DbReCreateEmpty().GetAwaiter().GetResult();
+//Seeder.Instance.DbEnsureCratedAndSeed(app).GetAwaiter().GetResult();
+//var c = Seeder.Instance.GetClasses(["DBZohoMail"],"select * from public.zoho_mail").GetAwaiter().GetResult();
 
 app.Run();

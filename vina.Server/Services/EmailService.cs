@@ -27,10 +27,12 @@ namespace vina.Server.Controllers
         }
 
         public async Task SendEmailAsync(
+            string emailToken,
             string fromEmail,
             string toEmail,
             string subject,
-            string body)
+            string body
+            )
         {
             try
             {
@@ -41,7 +43,7 @@ namespace vina.Server.Controllers
                                 $"    \"content\": \"{body}\"\n" +
                                 $"}}";
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                content.Headers.Add("Authorization", $"{_appSettings.EmailSettings.EmailToken}");
+                content.Headers.Add("Authorization", $"{emailToken}");
                 var httpResponse = await client.PostAsync(_appSettings.EmailSettings.EmailWebserviceUrl, content);
                 var responseString = await httpResponse.Content.ReadAsStringAsync();
                 Console.WriteLine(responseString);
