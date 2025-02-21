@@ -12,9 +12,9 @@ namespace vina.Server.Controllers
     {
         private readonly Random _random = new Random();
         private readonly string _connectionString;
-        private readonly AppSettings _appSettings;
+        private readonly AppSettingsOptions _appSettings;
         private readonly ILogger<AuthService> _logger;
-        public AuthService(ILogger<AuthService> logger, IOptions<AppSettings> appSettings, string connectionString)
+        public AuthService(ILogger<AuthService> logger, IOptions<AppSettingsOptions> appSettings, string connectionString)
         {
             _logger = logger;
             _appSettings = appSettings.Value;

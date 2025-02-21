@@ -7,6 +7,7 @@ using DBcs;
 using vina.Server.Config;
 using Microsoft.AspNetCore.Http.Extensions;
 using System.Web;
+using Microsoft.Extensions.Options;
 namespace vina.Server.Controllers
 {
     [ApiController]
@@ -16,18 +17,18 @@ namespace vina.Server.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IDBcs _dBcs;
         private readonly EmailService _emailService;
-        private readonly AppSettings _appSettings;
+        private readonly AppSettingsOptions _appSettings;
 
         public NoPasswordController(
             UserManager<IdentityUser> userManager,
             IDBcs dBcs,
             EmailService emailService,
-            AppSettings appSettings)
+            IOptions<AppSettingsOptions> appSettings)
         {
             _emailService = emailService;
             _userManager = userManager;
             _dBcs = dBcs;
-            _appSettings = appSettings;
+            _appSettings = appSettings.Value;
         }
 
         [HttpGet("{email:minlength(6):maxlength(150)}")]
@@ -74,10 +75,14 @@ namespace vina.Server.Controllers
             var zoho_email = await _dBcs.RunQuerySingleOrDefaultAsync<DBZohoMail>(DBZohoMail.SelectSingleText, 1);
             if (zoho_email != null)
             {
+#if DEBUG
                 // we need to RequestZohoAuthorization 
                 await RequestZohoAuthorization();
                 // waiting for callback, nothing to do...
                 return Ok();
+#else
+                return BadRequest();
+#endif
             }
             await _emailService.SendEmailAsync(
                 zoho_email.AccessToken,
@@ -106,11 +111,13 @@ namespace vina.Server.Controllers
             }
             return Unauthorized();
         }
+
+#if DEBUG
         /// <summary>
         /// Requesting Zoho authorization code
         /// </summary>
         /// <returns></returns>
-         public async Task<ActionResult> RequestZohoAuthorization()
+        public async Task<ActionResult> RequestZohoAuthorization()
         {
             //GET
             //https://accounts.zoho.com/oauth/v2/auth?{client_id}&response_type==code&redirect_uri={redirect_uri}&scope={scope}&access_type={offline or online}
@@ -141,10 +148,17 @@ namespace vina.Server.Controllers
             }
 
         }
-//        [HttpGet("zohoredirect?code={code}&location={domain}&accounts-server={accounts_url}")]
+        /// <summary>
+        /// Zoho authorization callback
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="location"></param>
+        /// <param name="accounts_server"></param>
+        /// <returns></returns>
         [HttpGet("zohoredirect")]
-        public async Task RequestZohoAuthorizationCallback(string code, string domain, string accounts_url )
+        public async Task RequestZohoAuthorizationCallback([FromQuery]string code, [FromQuery]string location, [FromQuery(Name="accounts-server") ]string accounts_server )
         {
+
             /*
             Sample response format of the URL in which authorization code is received:
 
@@ -154,10 +168,27 @@ namespace vina.Server.Controllers
 
             https://zylker.com/redirect?code=1000.*******77&location=us&accounts-server=https%3A%2F%2Faccounts.zoho.com
             */
+            var zoho_email = await _dBcs.RunQuerySingleOrDefaultAsync<DBZohoMail>(DBZohoMail.SelectSingleText, 1);
+            if(zoho_email == null)
+            {
+                zoho_email = new DBZohoMail();
+                zoho_email.Id = 1;
+                zoho_email.AuthorizationCode = code;
+                zoho_email.AuthorizationCodeTimestamp = DateTime.UtcNow;
+                await _dBcs.RunNonQueryAsync(DBZohoMail.InsertText, zoho_email);
+            }
+            else
+            {
+                zoho_email.AuthorizationCode = code;
+                zoho_email.AuthorizationCodeTimestamp = DateTime.UtcNow;
+                await _dBcs.RunNonQueryAsync(DBZohoMail.UpdateText, zoho_email);
+            }
+          //  await  ExchangeAuthorizationCodeForAccessToken(zoho_email);
 
             return;
         }
-        public async Task ExchangeAuthorizationCodeForAccessToken()
+#endif       
+        public async Task ExchangeAuthorizationCodeForAccessToken(DBZohoMail zoho_email)
         {
             //POST
             /*
@@ -191,6 +222,7 @@ namespace vina.Server.Controllers
             }
             */
         }
+
         public async Task RenewAccessToken()
         {
             //POST

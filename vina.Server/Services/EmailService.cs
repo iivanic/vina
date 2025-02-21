@@ -10,14 +10,14 @@ namespace vina.Server.Controllers
     {
         private readonly IConfiguration _config;
         private static readonly HttpClient client = new HttpClient();
-        private readonly AppSettings _appSettings;
+        private readonly AppSettingsOptions _appSettings;
         private readonly ILogger<EmailService> _logger;
 
         private readonly string _connectionString;
         public EmailService(
             ILogger<EmailService> logger,
             IConfiguration config,
-            IOptions<AppSettings> appSettings,
+            IOptions<AppSettingsOptions> appSettings,
             string connectionString)
         {
             _logger = logger;

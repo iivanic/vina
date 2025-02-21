@@ -1,4 +1,4 @@
-@Server_HostAddress = http://localhost:5186
+@Server_HostAddress = https://localhost:7057
 
 ###
 GET {{Server_HostAddress}}/products/hr
@@ -13,5 +13,5 @@ GET {{Server_HostAddress}}/nopassword/info@vina-ivanic.hr
 Accept: application/json
 
 ###
-GET {{Server_HostAddress}}/nopassword/zohoredirect/?code=12345&location=us&accounts-server=accsrv
+GET {{Server_HostAddress}}/nopassword/zohoredirect?code=12345&location=us&accounts-server=accsrv
 Accept: application/json

@@ -1,7 +1,8 @@
 namespace vina.Server.Config;
 
-public class AppSettings
+public class AppSettingsOptions
 {
+    public const string AppSettings="AppSettings";
     public string DatabaseName { get; set; } = "";
     public EmailSettings EmailSettings { get; set; } = new EmailSettings();
 }
