@@ -18,13 +18,16 @@ namespace vina.Server.Controllers
         private readonly IDBcs _dBcs;
         private readonly EmailService _emailService;
         private readonly AppSettingsOptions _appSettings;
+         private readonly ILogger<ProductsController> _logger;
 
         public NoPasswordController(
+            ILogger<ProductsController> logger,
             UserManager<IdentityUser> userManager,
             IDBcs dBcs,
             EmailService emailService,
             IOptions<AppSettingsOptions> appSettings)
         {
+            _logger=logger;
             _emailService = emailService;
             _userManager = userManager;
             _dBcs = dBcs;
@@ -81,6 +84,7 @@ namespace vina.Server.Controllers
                 // waiting for callback, nothing to do...
                 return Ok();
 #else
+                _logger.LogError("Zoho email settings not found");
                 return BadRequest();
 #endif
             }
