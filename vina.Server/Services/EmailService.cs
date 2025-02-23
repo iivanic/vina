@@ -10,14 +10,14 @@ namespace vina.Server.Controllers
     {
         private readonly IConfiguration _config;
         private static readonly HttpClient client = new HttpClient();
-        private readonly AppSettings _appSettings;
+        private readonly AppSettingsOptions _appSettings;
         private readonly ILogger<EmailService> _logger;
 
         private readonly string _connectionString;
         public EmailService(
             ILogger<EmailService> logger,
             IConfiguration config,
-            IOptions<AppSettings> appSettings,
+            IOptions<AppSettingsOptions> appSettings,
             string connectionString)
         {
             _logger = logger;
@@ -27,10 +27,12 @@ namespace vina.Server.Controllers
         }
 
         public async Task SendEmailAsync(
+            string emailToken,
             string fromEmail,
             string toEmail,
             string subject,
-            string body)
+            string body
+            )
         {
             try
             {
@@ -41,7 +43,7 @@ namespace vina.Server.Controllers
                                 $"    \"content\": \"{body}\"\n" +
                                 $"}}";
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                content.Headers.Add("Authorization", $"{_appSettings.EmailSettings.EmailToken}");
+                content.Headers.Add("Authorization", $"{emailToken}");
                 var httpResponse = await client.PostAsync(_appSettings.EmailSettings.EmailWebserviceUrl, content);
                 var responseString = await httpResponse.Content.ReadAsStringAsync();
                 Console.WriteLine(responseString);

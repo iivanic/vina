@@ -6,6 +6,8 @@ using vina.Server.Models;
 using DBcs;
 using vina.Server.Config;
 using Microsoft.AspNetCore.Http.Extensions;
+using System.Web;
+using Microsoft.Extensions.Options;
 namespace vina.Server.Controllers
 {
     [ApiController]
@@ -15,18 +17,21 @@ namespace vina.Server.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IDBcs _dBcs;
         private readonly EmailService _emailService;
-        private readonly AppSettings _appSettings;
+        private readonly AppSettingsOptions _appSettings;
+         private readonly ILogger<ProductsController> _logger;
 
         public NoPasswordController(
+            ILogger<ProductsController> logger,
             UserManager<IdentityUser> userManager,
             IDBcs dBcs,
             EmailService emailService,
-            AppSettings appSettings)
+            IOptions<AppSettingsOptions> appSettings)
         {
+            _logger=logger;
             _emailService = emailService;
             _userManager = userManager;
             _dBcs = dBcs;
-            _appSettings = appSettings;
+            _appSettings = appSettings.Value;
         }
 
         [HttpGet("{email:minlength(6):maxlength(150)}")]
@@ -70,9 +75,39 @@ namespace vina.Server.Controllers
             mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_signature", lang = lang }))?.Content + "</p>";
 
-            await _emailService.SendEmailAsync(_appSettings.EmailSettings.EmailSender, email, mailSubject?.Content ?? "", mailBody);
-
-
+            var zoho_email = await _dBcs.RunQuerySingleOrDefaultAsync<DBZohoMail>(DBZohoMail.SelectSingleText, 1);
+            if (zoho_email == null)
+            {
+#if DEBUG
+                // we need to RequestZohoAuthorization 
+                await RequestZohoAuthorization();
+                // waiting for callback, nothing to do...
+                return Ok();
+#else
+                _logger.LogError("Zoho email settings not found");
+                return BadRequest();
+#endif
+            }
+            if(zoho_email.AccessTokenValidUntil < DateTime.UtcNow || zoho_email.AccessToken == null)
+            {
+                if(zoho_email.RefreshToken == null )
+                {
+                    // we need to RequestZohoAuthorization 
+                    await ExchangeAuthorizationCodeForAccessToken(zoho_email);
+                    // waiting for callback, nothing to do...
+                    return Ok();
+                }
+                else
+                {
+                    if (zoho_email.AccessTokenValidUntil<DateTime.UtcNow.AddMinutes(-15))
+                    {
+                        await RenewAccessToken(zoho_email);
+                    }
+                }
+            }
+            await _emailService.SendEmailAsync(
+                zoho_email.AccessToken,
+                _appSettings.EmailSettings.EmailSender, email, mailSubject?.Content ?? "", mailBody);
 
             //send email with token
             return NoContent();
@@ -97,19 +132,55 @@ namespace vina.Server.Controllers
             }
             return Unauthorized();
         }
+
+#if DEBUG
         /// <summary>
         /// Requesting Zoho authorization code
         /// </summary>
-        /// <param name="code"></param>
         /// <returns></returns>
-        public async Task RequestZohoAuthorization(string code)
+        public async Task<ActionResult> RequestZohoAuthorization()
         {
             //GET
             //https://accounts.zoho.com/oauth/v2/auth?{client_id}&response_type==code&redirect_uri={redirect_uri}&scope={scope}&access_type={offline or online}
-            return;
+            using (var client = new HttpClient())
+            {
+                var query = HttpUtility.ParseQueryString(string.Empty);
+                query["client_id"] = _appSettings.EmailSettings.ClientId;
+                query["response_type"] = "code";
+                query["redirect_uri"] = _appSettings.EmailSettings.RedirectUri;
+                query["scope"] = "ZohoMail.messages.CREATE";
+                query["access_type"] = "offline";
+
+                var uriBuilder = new UriBuilder("https://accounts.zoho.com/oauth/v2/auth")
+                {
+                    Query = query.ToString()
+                };
+
+                var response = await client.GetAsync(uriBuilder.Uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    return Ok(responseBody);
+                }
+                else
+                {
+                    Console.WriteLine($"Open link: {response.RequestMessage?.RequestUri}");
+                    return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+                }
+            }
+
         }
-        public async Task RequestZohoAuthorizationCallback(string code)
+        /// <summary>
+        /// Zoho authorization callback
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="location"></param>
+        /// <param name="accounts_server"></param>
+        /// <returns></returns>
+        [HttpGet("zohoredirect")]
+        public async Task RequestZohoAuthorizationCallback([FromQuery]string code, [FromQuery]string location, [FromQuery(Name="accounts-server") ]string accounts_server )
         {
+            Console.WriteLine($"code: {code}, location: {location}, accounts_server: {accounts_server}");
             /*
             Sample response format of the URL in which authorization code is received:
 
@@ -119,9 +190,39 @@ namespace vina.Server.Controllers
 
             https://zylker.com/redirect?code=1000.*******77&location=us&accounts-server=https%3A%2F%2Faccounts.zoho.com
             */
+            var zoho_email = await _dBcs.RunQuerySingleOrDefaultAsync<DBZohoMail>(DBZohoMail.SelectSingleText, 1);
+            if(zoho_email == null)
+            {
+                zoho_email = new DBZohoMail();
+                zoho_email.Id = 1;
+                zoho_email.AuthorizationCode = code;
+                zoho_email.AuthorizationLocation = location;
+                zoho_email.AuthorizationAccountsServer = accounts_server;
+                zoho_email.AuthorizationCodeTimestamp = DateTime.UtcNow;
+                zoho_email.AccessTokenExpiresIn=0;
+                zoho_email.AccessTokenTimestamp=DateTime.MinValue;
+                zoho_email.AccessTokenValidUntil=DateTime.MinValue;
+
+                await _dBcs.RunNonQueryAsync(DBZohoMail.InsertText, zoho_email);
+            }
+            else
+            {   
+                zoho_email.AuthorizationLocation = location;
+                zoho_email.AuthorizationAccountsServer = accounts_server;
+                zoho_email.AuthorizationCode = code;
+                zoho_email.AuthorizationCodeTimestamp = DateTime.UtcNow;
+                zoho_email.AccessTokenExpiresIn=0;
+                zoho_email.AccessTokenTimestamp=DateTime.MinValue;
+                zoho_email.AccessTokenValidUntil=DateTime.MinValue;
+
+                await _dBcs.RunNonQueryAsync(DBZohoMail.UpdateText, zoho_email);
+            }
+          //  await  ExchangeAuthorizationCodeForAccessToken(zoho_email);
+
             return;
         }
-        public async Task ExchangeAuthorizationCodeForAccessToken()
+#endif       
+        public async Task ExchangeAuthorizationCodeForAccessToken(DBZohoMail zoho_email)
         {
             //POST
             /*
@@ -155,7 +256,8 @@ namespace vina.Server.Controllers
             }
             */
         }
-        public async Task RenewAccessToken()
+
+        public async Task RenewAccessToken(DBZohoMail zoho_email)
         {
             //POST
             //https://accounts.zoho.com/oauth/v2/token?refresh_token={refresh_token}&grant_type=refresh_token&client_id={client_id}&client_secret={client_secret}

@@ -14,7 +14,7 @@ string connectionString = (
     builder.Configuration.GetConnectionString("DefaultConnection") ?? "")
     .Replace(
         "{DATABASE}",
-        builder.Configuration.GetSection("AppSettings").Get<AppSettings>()?.DatabaseName
+        builder.Configuration.GetSection("AppSettings").Get<AppSettingsOptions>()?.DatabaseName
     );
 
 // Add services to the container.
@@ -43,8 +43,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<AuthService>(); // Register AuthService for dependency injection
 builder.Services.AddScoped<EmailService>(); // 
 
-builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-
+builder.Services.Configure<AppSettingsOptions>(builder.Configuration.GetSection(AppSettingsOptions.AppSettings));
+//builder.Services.AddSingleton<AppSettingsOptions>();
 builder.Services.AddSingleton(connectionString);
 
 builder.Services.AddScoped<IDBcs>(provider => {return new DBcs.DBcs(connectionString);});
@@ -73,6 +73,6 @@ app.MapFallbackToFile("/index.html");
 
 Seeder.Instance.DbReCreateEmpty().GetAwaiter().GetResult();
 Seeder.Instance.DbEnsureCratedAndSeed(app).GetAwaiter().GetResult();
-//var c = Seeder.Instance.GetClasses().GetAwaiter().GetResult();
+//var c = Seeder.Instance.GetClasses(["DBZohoMail"],"select * from public.zoho_mail").GetAwaiter().GetResult();
 
 app.Run();

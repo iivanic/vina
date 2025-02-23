@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-namespace vina.Server.Models
+namespace vina.Server.Models;
+
+public class TranslatedProduct : DBProduct
 {
-	public class TranslatedProduct:DBProduct
-	{
-		new public const string SelectText = @"
+	new public const string SelectText = @"
 			select
 				p.Id, 
 				t1.content as name_k,
@@ -24,7 +24,7 @@ namespace vina.Server.Models
 			and t2.lang = t3.lang
 			and t3.lang = @lang
 			and published = true;";
-		new public const string SelectSingleText = @"
+	new public const string SelectSingleText = @"
 			select
 				p.Id, 
 				t1.content as name_k,
@@ -45,5 +45,5 @@ namespace vina.Server.Models
 			and t3.lang = @lang
 			and published = true
 			and p.id=@id;";
-	}
 }
+

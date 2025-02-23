@@ -136,7 +136,7 @@ namespace vina.Server
 
 
         }
-        public async Task<string> GetClasses()
+        public async Task<string> GetClasses(string[] classNames, string queries)
         {
             /*
                 You can get all tables with:
@@ -150,31 +150,23 @@ namespace vina.Server
                         table_type='BASE TABLE';
             */
             var dBcs = new DBcs.DBcs(ConnStringMyDb);
-            var classes = await dBcs.GetClassCodeString(
-    // Class represents one row, while List of classes
-    // represents table. Thats why is good practice to
-    // name classes in singular, and tables in plural
-    //
-    // Also it is recommended to add prefix to class names
-    // that represents items from db.
-    //  -makes you aware that this class represents data
-    //   row in db
-    //  -avoids name conflicts - in our quiz example, if 
-    //   we name "Question" item from table questions,
-    //   it will be in conflict with property "Question",
-    //   Which represents text of the question.
-    //
-    [
-        "DBCustomer",
-        "DBToken",
-        "DBTranslation",
-        "DBOrder",
-        "DBOrderItem",
-        "DBProduct",
-        "DBCountry",
-        "DBOrderStatus",
-        "DBCategory",
-    ],
+            var classes = await dBcs.GetClassCodeString(classNames,queries );
+            return classes;
+        }
+        public async Task<string> GetClasses()
+        {
+          return  await  GetClasses(
+                [
+                    "DBCustomer",
+                    "DBToken",
+                    "DBTranslation",
+                    "DBOrder",
+                    "DBOrderItem",
+                    "DBProduct",
+                    "DBCountry",
+                    "DBOrderStatus",
+                    "DBCategory",
+                ],
                 @"
                 select * from public.customers;
                 select * from public.tokens;
@@ -186,11 +178,7 @@ namespace vina.Server
                 select * from public.order_status;
                 select * from public.categories;
                 "
-
             );
-            return classes;
         }
-
     }
-
 }
