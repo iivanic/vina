@@ -9,6 +9,11 @@ GET {{Server_HostAddress}}/products/de/3
 Accept: application/json
 
 ###
+<!--
+Multi Line Comments
+Goes here
+-->
+###
 GET {{Server_HostAddress}}/nopassword/info@vina-ivanic.hr
 Accept: application/json
 
