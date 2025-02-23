@@ -10,8 +10,19 @@ Accept: application/json
 
 ###
 <!--
-Multi Line Comments
-Goes here
+To get new zoho authorization code:
+truncate table public.zoho_mail
+check https://accounts.zoho.com/developerconsole for client id, client secret, and redirect urls
+Client Id, client secret needes to be configured in the appsettings.json
+Callback URL: http://localhost:5186/nopassword/zohoredirect
+run DEBUG BUILD
+Call /nopassword/info@vina-ivanic.hr and leave the app running
+In logger output you will get the URL to get the approve authorization code
+open url, login and approve.
+Once approved callback will be called and authorization code will be saved to zoho_mail table
+update db script to seed with new code
+
+after that app will automatically handle zoho mail api calls
 -->
 ###
 GET {{Server_HostAddress}}/nopassword/info@vina-ivanic.hr

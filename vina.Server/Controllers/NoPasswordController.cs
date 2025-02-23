@@ -95,8 +95,6 @@ namespace vina.Server.Controllers
                 {
                     // we need to RequestZohoAuthorization 
                     await ExchangeAuthorizationCodeForAccessToken(zoho_email);
-                    // waiting for callback, nothing to do...
-                    return Ok();
                 }
                 else
                 {

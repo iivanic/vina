@@ -17,6 +17,10 @@ string connectionString = (
         builder.Configuration.GetSection("AppSettings").Get<AppSettingsOptions>()?.DatabaseName
     );
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddProvider(new LoggerDatabaseProvider(connectionString));
+
 // Add services to the container.
 
 // ---------------identity ----------------
@@ -71,8 +75,8 @@ app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
 
-Seeder.Instance.DbReCreateEmpty().GetAwaiter().GetResult();
-Seeder.Instance.DbEnsureCratedAndSeed(app).GetAwaiter().GetResult();
-//var c = Seeder.Instance.GetClasses(["DBZohoMail"],"select * from public.zoho_mail").GetAwaiter().GetResult();
+//Seeder.Instance.DbReCreateEmpty().GetAwaiter().GetResult();
+//Seeder.Instance.DbEnsureCratedAndSeed(app).GetAwaiter().GetResult();
+//var c = Seeder.Instance.GetClasses(["DBLog"],"select * from public.logs").GetAwaiter().GetResult();
 
 app.Run();
