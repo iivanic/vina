@@ -10,7 +10,7 @@ using Npgsql;
 
 namespace DBcs;
 
-public class DBcs: IDBcs
+public class DBcs : IDBcs
 {
     /// <summary>
     /// in this case, override CreateDataSource()
@@ -97,7 +97,7 @@ public class DBcs: IDBcs
 
             ret = t;
         }
-        else 
+        else
             return default(T);
         return ret;
     }
@@ -523,7 +523,7 @@ public class DBcs: IDBcs
     {
         //if (o == null) return true;
         Type type = o.GetType();
-        return type.IsPrimitive 
+        return type.IsPrimitive
         || type.Equals(typeof(string));
     }
     private bool IsList(object o)
@@ -636,26 +636,28 @@ public class DBcs: IDBcs
         cmd.CommandType = commandType;
         if (parameterObject != null)
         {
-             
+
             // if parameter is simple type
             // and we need one parameter
-        
-            if(IsSimple(parameterObject))
+
+            if (IsSimple(parameterObject))
             {
-                if(parameters.Length == 1)
-                {   cmd.Parameters.Add(
-                        CreateParameter(cmd, parameters[0], parameterObject)
+                if (parameters.Length == 1)
+                {
+                    cmd.Parameters.Add(
+                        CreateParameter(cmd, parameters[0], parameterObject, parameterObject.GetType())
                     );
                     return cmd;
                 }
             }
-            
+
             //props and fields
             var bindingAttr = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
             var infos =
                 from it in parameterObject.GetType().GetMembers(bindingAttr)
                 where it is PropertyInfo || it is FieldInfo
                 select it;
+            int foundParamCount = parameters.Length;
             foreach (var p in parameters)
             {
                 //prepare param for comparison with obj props
@@ -665,18 +667,28 @@ public class DBcs: IDBcs
                 foreach (var pi in infos)
                     if (PreparePropertyName(pi.Name) == pPrepared)
                         //add param ..
-                        if(pi is PropertyInfo)
-                            cmd.Parameters.Add(
-                                CreateParameter(cmd, p, ((PropertyInfo)pi).GetValue(parameterObject))
-                            );
-                        else if(pi is FieldInfo)
+                        if (pi is PropertyInfo)
                         {
                             cmd.Parameters.Add(
-                                CreateParameter(cmd, p, ((FieldInfo)pi).GetValue(parameterObject))
+                                CreateParameter(cmd, p, ((PropertyInfo)pi).GetValue(parameterObject), 
+                                ((PropertyInfo)pi).GetType())
                             );
+                            foundParamCount--;
+
+                        }
+                        else if (pi is FieldInfo)
+                        {
+                            cmd.Parameters.Add(
+                                CreateParameter(cmd, p, ((FieldInfo)pi).GetValue(parameterObject),
+                                ((FieldInfo)pi).GetType()
+                                )
+                            );
+                            foundParamCount--;
                         }
             }
-         
+            if(foundParamCount > 0)
+                throw new ArgumentException("Not all parameters were found in parameterObject");
+
         }
         return cmd;
     }
@@ -774,11 +786,13 @@ public class DBcs: IDBcs
         return NpgsqlDataSource.Create(connectionString);
     }
 
-    public virtual IDbDataParameter CreateParameter(DbCommand command, string name, object? value)
+    public virtual IDbDataParameter CreateParameter(DbCommand command, string name, object? value, Type type)
     {
+        
         var p = command.CreateParameter();
         p.ParameterName = name;
-        p.Value = value;
+        p.Value = value ?? DBNull.Value;
+        p.DbType = type.ToDbType();
         return p;
     }
     #endregion
