@@ -44,7 +44,7 @@ public class LoggerDatabaseProvider : ILoggerProvider
                 CategoryName = _categoryName,
                 Message = state == null ? exception?.ToString() ?? "" : formatter(state, exception),
                 Exception = exception == null ? "" : exception.ToString(),
-                LogTimestamp = DateTime.Now
+                LogTimestamp = DateTime.UtcNow
             };
             DBcs.DBcs db = new DBcs.DBcs(_connectionString);
 

@@ -91,7 +91,7 @@ namespace vina.Server.Controllers
             }
             if (zoho_email.AccessTokenValidUntil < DateTime.UtcNow || zoho_email.AccessToken == null)
             {
-                if (zoho_email.RefreshToken == null)
+                if (string.IsNullOrEmpty(zoho_email.RefreshToken))
                 {
                     // we need to RequestZohoAuthorization 
                     await ExchangeAuthorizationCodeForAccessToken(zoho_email);
@@ -100,6 +100,11 @@ namespace vina.Server.Controllers
                 {
                     await RenewAccessToken(zoho_email);
                 }
+            }
+            if(zoho_email.AccessToken==null)
+            {
+                _logger.LogError("Zoho access token not found");
+                return BadRequest();
             }
             await _emailService.SendEmailAsync(
                 zoho_email.AccessToken,
@@ -240,7 +245,7 @@ namespace vina.Server.Controllers
                 query["redirect_uri"] = _appSettings.EmailSettings.RedirectUri;
                 query["scope"] = "ZohoMail.messages.CREATE";
 
-                var uriBuilder = new UriBuilder("https://accounts.zoho.com/oauth/v2/token")
+                var uriBuilder = new UriBuilder($"{zoho_email.AuthorizationAccountsServer}/oauth/v2/token")
                 {
                     Query = query.ToString()
                 };
@@ -276,6 +281,8 @@ namespace vina.Server.Controllers
                     var j = JsonDocument.Parse(responseBody);
                     var root = j.RootElement;
                     zoho_email.AccessToken = root.GetProperty("access_token").GetString();
+                    if(string.IsNullOrEmpty(zoho_email.AccessToken))
+                        _logger.LogError("Zoho Access Token not recieved");
                     zoho_email.RefreshToken = root.GetProperty("refresh_token").GetString();
                     zoho_email.AccessTokenExpiresIn = root.GetProperty("expires_in").GetInt32();
                     zoho_email.AccessTokenTimestamp = DateTime.UtcNow;

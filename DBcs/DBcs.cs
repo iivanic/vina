@@ -671,7 +671,7 @@ public class DBcs : IDBcs
                         {
                             cmd.Parameters.Add(
                                 CreateParameter(cmd, p, ((PropertyInfo)pi).GetValue(parameterObject), 
-                                ((PropertyInfo)pi).GetType())
+                                ((PropertyInfo)pi).PropertyType)
                             );
                             foundParamCount--;
 
@@ -680,8 +680,8 @@ public class DBcs : IDBcs
                         {
                             cmd.Parameters.Add(
                                 CreateParameter(cmd, p, ((FieldInfo)pi).GetValue(parameterObject),
-                                ((FieldInfo)pi).GetType()
-                                )
+                                ((FieldInfo)pi).FieldType)
+                                
                             );
                             foundParamCount--;
                         }
