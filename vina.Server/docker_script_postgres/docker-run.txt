@@ -1,0 +1,5 @@
+docker network create pg_net
+docker run --name postgres_dev --network=pg_net -e POSTGRES_PASSWORD=n -e POSTGRES_DB=vina_ivanic -p 5433:5432 -d postgres  
+docker run --name pgAdmin4 --network=pg_net -e PGADMIN_DEFAULT_EMAIL=igor_ivanic@hotmail.com -e PGADMIN_DEFAULT_PASSWORD=n -p 80:80 -d dpage/pgadmin4
+
+
