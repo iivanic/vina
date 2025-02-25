@@ -152,7 +152,7 @@ namespace vina.Server.Controllers
                 query["scope"] = "ZohoMail.messages.CREATE";
                 query["access_type"] = "offline";
 
-                var uriBuilder = new UriBuilder("https://accounts.zoho.com/oauth/v2/auth")
+                var uriBuilder = new UriBuilder("https://accounts.zoho.eu/oauth/v2/auth")
                 {
                     Query = query.ToString()
                 };
@@ -245,7 +245,7 @@ namespace vina.Server.Controllers
                 query["redirect_uri"] = _appSettings.EmailSettings.RedirectUri;
                 query["scope"] = "ZohoMail.messages.CREATE";
 
-                var uriBuilder = new UriBuilder($"{zoho_email.AuthorizationAccountsServer}/oauth/v2/token")
+                var uriBuilder = new UriBuilder($"https://accounts.zoho.eu/oauth/v2/token")
                 {
                     Query = query.ToString()
                 };
@@ -315,7 +315,7 @@ namespace vina.Server.Controllers
                 query["client_id"] = _appSettings.EmailSettings.ClientId;
                 query["client_secret"] = _appSettings.EmailSettings.ClientSecret;
 
-                var uriBuilder = new UriBuilder("https://accounts.zoho.com/oauth/v2/token")
+                var uriBuilder = new UriBuilder($"{zoho_email.AuthorizationAccountsServer}/oauth/v2/token")
                 {
                     Query = query.ToString()
                 };

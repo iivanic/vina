@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using Microsoft.Extensions.Options;
 using vina.Server.Config;
 using vina.Server.Models;
@@ -46,7 +47,21 @@ namespace vina.Server.Controllers
                 client.DefaultRequestHeaders.Add("Authorization", $"Zoho-oauthtoken {emailToken}");
                 var httpResponse = await client.PostAsync(_appSettings.EmailSettings.EmailWebserviceUrl, content);
                 var responseString = await httpResponse.Content.ReadAsStringAsync();
-                Console.WriteLine(responseString);
+                if(!httpResponse.IsSuccessStatusCode)
+                {
+                    _logger.LogError($"Error sending email: {responseString}");
+                }
+                else
+                {
+                    var j = JsonDocument.Parse(responseString);
+                    var root = j.RootElement;
+                    var r = root.GetProperty("status").GetProperty("code").GetInt32();
+                    if(r>201)
+                        _logger.LogError($"Error sending email: {responseString}");
+                    else
+                        _logger.LogInformation($"Email sent: {responseString}");
+
+                }
             }
             catch (Exception ex)
             {
