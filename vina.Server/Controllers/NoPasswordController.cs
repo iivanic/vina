@@ -68,7 +68,7 @@ namespace vina.Server.Controllers
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_body1", lang = lang }))?.Content + "</p>";
             mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_body2", lang = lang }))?.Content + "</p>";
-            mailBody += $"<p><a href='{Request.Scheme}://{Request.Host}/nopassword/{Token}/{email}'>{(await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
+            mailBody += $"<p><a href='{Request.Scheme}://{Request.Host}/nopassword/{HttpUtility.UrlEncode(Token)}/{email}'>{(await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_click_here", lang = lang }))?.Content}</a></p>";
 
             mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
@@ -101,7 +101,7 @@ namespace vina.Server.Controllers
                     await RenewAccessToken(zoho_email);
                 }
             }
-            if(zoho_email.AccessToken==null)
+            if (zoho_email.AccessToken == null)
             {
                 _logger.LogError("Zoho access token not found");
                 return BadRequest();
@@ -114,17 +114,17 @@ namespace vina.Server.Controllers
             return NoContent();
         }
 
-        [HttpGet("{token:alpha:minlength(6):maxlength(500)}/{email:minlength(6):maxlength(150)}")]
-        public async Task<ActionResult<String>> Verify(string Token, string Email)
+        [HttpGet("{token:minlength(6):maxlength(2500)}/{email:minlength(6):maxlength(150)}")]
+        public async Task<ActionResult<String>> Verify(string token, string email)
         {
             // Fetch your user from the database
-            var User = await _userManager.FindByEmailAsync(Email);
+            var User = await _userManager.FindByEmailAsync(email);
             if (User == null)
             {
-                return NotFound();
+                return Unauthorized();
             }
 
-            var IsValid = await _userManager.VerifyUserTokenAsync(User, "NPTokenProvider", "nopassword-for-the-win", Token);
+            var IsValid = await _userManager.VerifyUserTokenAsync(User, "NPTokenProvider", "nopassword-for-the-win", token);
             if (IsValid)
             {
                 // TODO: Generate a bearer token
@@ -250,7 +250,7 @@ namespace vina.Server.Controllers
                     Query = query.ToString()
                 };
                 HttpContent content = new StringContent("");
-
+                _logger.LogInformation($"ExchangeAuthorizationCodeForAccessToken: {uriBuilder.Uri}");
                 var response = await client.PostAsync(uriBuilder.Uri, content);
 
 
@@ -281,9 +281,16 @@ namespace vina.Server.Controllers
                     var j = JsonDocument.Parse(responseBody);
                     var root = j.RootElement;
                     zoho_email.AccessToken = root.GetProperty("access_token").GetString();
-                    if(string.IsNullOrEmpty(zoho_email.AccessToken))
+                    if (string.IsNullOrEmpty(zoho_email.AccessToken))
                         _logger.LogError("Zoho Access Token not recieved");
-                    zoho_email.RefreshToken = root.GetProperty("refresh_token").GetString();
+
+                    zoho_email.ApiDomain = root.GetProperty("api_domain").GetString();
+
+                    if (root.TryGetProperty("refresh_token", out var rt))
+                        zoho_email.RefreshToken = rt.GetString();
+                    else
+                        _logger.LogWarning("Zoho Refresh Token not recieved.");
+
                     zoho_email.AccessTokenExpiresIn = root.GetProperty("expires_in").GetInt32();
                     zoho_email.AccessTokenType = root.GetProperty("token_type").GetString();
                     zoho_email.AccessTokenTimestamp = DateTime.UtcNow;
@@ -305,7 +312,7 @@ namespace vina.Server.Controllers
         {
             //POST
             //https://accounts.zoho.com/oauth/v2/token?refresh_token={refresh_token}&grant_type=refresh_token&client_id={client_id}&client_secret={client_secret}
-           
+
 
             using (var client = new HttpClient())
             {
@@ -320,7 +327,7 @@ namespace vina.Server.Controllers
                     Query = query.ToString()
                 };
                 HttpContent content = new StringContent("");
-
+                _logger.LogInformation($"RenewAccessToken: {uriBuilder.Uri}");
                 var response = await client.PostAsync(uriBuilder.Uri, content);
 
 
@@ -354,7 +361,7 @@ namespace vina.Server.Controllers
                 }
             }
 
-          
+
         }
 
     }

@@ -43,8 +43,11 @@ namespace vina.Server.Controllers
                                 $"    \"content\": \"{body}\"\n" +
                                 $"}}";
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
+                client.DefaultRequestHeaders.Remove("Accept");
+                client.DefaultRequestHeaders.Remove("Authorization");
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
                 client.DefaultRequestHeaders.Add("Authorization", $"Zoho-oauthtoken {emailToken}");
+                _logger.LogInformation($"Sending email via {_appSettings.EmailSettings.EmailWebserviceUrl}: {json}");
                 var httpResponse = await client.PostAsync(_appSettings.EmailSettings.EmailWebserviceUrl, content);
                 var responseString = await httpResponse.Content.ReadAsStringAsync();
                 if(!httpResponse.IsSuccessStatusCode)

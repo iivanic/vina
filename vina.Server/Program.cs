@@ -51,7 +51,7 @@ builder.Services.Configure<AppSettingsOptions>(builder.Configuration.GetSection(
 //builder.Services.AddSingleton<AppSettingsOptions>();
 builder.Services.AddSingleton(connectionString);
 
-builder.Services.AddTransient<IDBcs>(provider => {return new DBcs.DBcs(connectionString);});
+builder.Services.AddSingleton<IDBcs>(provider => {return new DBcs.DBcs(connectionString);});
 var app = builder.Build();
 
 app.UseDefaultFiles();
