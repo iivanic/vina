@@ -68,7 +68,7 @@ namespace vina.Server.Controllers
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_body1", lang = lang }))?.Content + "</p>";
             mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_body2", lang = lang }))?.Content + "</p>";
-            mailBody += $"<p><a href=\"{Request.Scheme}://{Request.Host}/{Token}/{email}\">{(await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
+            mailBody += $"<p><a href='{Request.Scheme}://{Request.Host}/nopassword/{Token}/{email}'>{(await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_click_here", lang = lang }))?.Content}</a></p>";
 
             mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
@@ -89,7 +89,7 @@ namespace vina.Server.Controllers
                 return BadRequest();
 #endif
             }
-            if (zoho_email.AccessTokenValidUntil < DateTime.UtcNow || zoho_email.AccessToken == null)
+            if (zoho_email.AccessTokenValidUntil < DateTime.UtcNow || string.IsNullOrEmpty(zoho_email.AccessToken))
             {
                 if (string.IsNullOrEmpty(zoho_email.RefreshToken))
                 {
@@ -114,7 +114,7 @@ namespace vina.Server.Controllers
             return NoContent();
         }
 
-        [HttpGet("{token:alpha:minlength(6):maxlength(50)}/{email:minlength(6):maxlength(150)}")]
+        [HttpGet("{token:alpha:minlength(6):maxlength(500)}/{email:minlength(6):maxlength(150)}")]
         public async Task<ActionResult<String>> Verify(string Token, string Email)
         {
             // Fetch your user from the database
@@ -285,6 +285,7 @@ namespace vina.Server.Controllers
                         _logger.LogError("Zoho Access Token not recieved");
                     zoho_email.RefreshToken = root.GetProperty("refresh_token").GetString();
                     zoho_email.AccessTokenExpiresIn = root.GetProperty("expires_in").GetInt32();
+                    zoho_email.AccessTokenType = root.GetProperty("token_type").GetString();
                     zoho_email.AccessTokenTimestamp = DateTime.UtcNow;
                     zoho_email.AccessTokenValidUntil = zoho_email.AccessTokenTimestamp.Value.AddSeconds(
                         Convert.ToDouble(zoho_email.AccessTokenExpiresIn));
@@ -338,7 +339,6 @@ namespace vina.Server.Controllers
                     var j = JsonDocument.Parse(responseBody);
                     var root = j.RootElement;
                     zoho_email.AccessToken = root.GetProperty("access_token").GetString();
-                 //   zoho_email.RefreshToken = root.GetProperty("refresh_token").GetString();
                     zoho_email.AccessTokenExpiresIn = root.GetProperty("expires_in").GetInt32();
                     zoho_email.AccessTokenTimestamp = DateTime.UtcNow;
                     zoho_email.AccessTokenValidUntil = zoho_email.AccessTokenTimestamp.Value.AddSeconds(

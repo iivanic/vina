@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using vina.Server.Config;
 using vina.Server.Models;
 
-
 namespace vina.Server.Controllers
 {
     public class EmailService
@@ -43,14 +42,15 @@ namespace vina.Server.Controllers
                                 $"    \"content\": \"{body}\"\n" +
                                 $"}}";
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                content.Headers.Add("Authorization", $"{emailToken}");
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Add("Authorization", $"Zoho-oauthtoken {emailToken}");
                 var httpResponse = await client.PostAsync(_appSettings.EmailSettings.EmailWebserviceUrl, content);
                 var responseString = await httpResponse.Content.ReadAsStringAsync();
                 Console.WriteLine(responseString);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                _logger.LogError(ex, "Error sending email");
             }
         }
     }

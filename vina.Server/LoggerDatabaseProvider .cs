@@ -64,6 +64,7 @@ public class LoggerDatabaseProvider : ILoggerProvider
                 return;
             if((Int64)ret>0)
                 await db.RunNonQueryAsync(DBLog.InsertText, log);
+            
          
         }
 
