@@ -68,7 +68,7 @@ namespace vina.Server.Controllers
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_body1", lang = lang }))?.Content + "</p>";
             mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_body2", lang = lang }))?.Content + "</p>";
-            mailBody += $"<p><a href='{Request.Scheme}://{Request.Host}/nopassword/{HttpUtility.UrlEncode(Token)}/{email}'>{(await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
+            mailBody += $"<p><a rel='notrack' href='{Request.Scheme}://{Request.Host}/nopassword/{HttpUtility.UrlEncode(Token)}/{email}'>{(await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_click_here", lang = lang }))?.Content}</a></p>";
 
             mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(

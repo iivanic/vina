@@ -29,5 +29,9 @@ GET {{Server_HostAddress}}/nopassword/info@vina-ivanic.hr
 Accept: application/json
 
 ###
+GET {{Server_HostAddress}}/nopassword/igor.ivanic@omniaspect.hr
+Accept: application/json
+
+###
 GET {{Server_HostAddress}}/nopassword/zohoredirect?code=12345&location=us&accounts-server=accsrv
 Accept: application/json
