@@ -78,8 +78,8 @@ namespace vina.Server.Controllers
 
 
             //send email with mailjet
-            await _emailService.SendEmailAsyncMailJet(email, mailSubject?.Content ?? "", mailBody);
-            return  NoContent();
+            // await _emailService.SendEmailAsyncMailJet(email, mailSubject?.Content ?? "", mailBody);
+            // return  NoContent();
 
             var zoho_email = await _dBcs.RunQuerySingleOrDefaultAsync<DBZohoMail>(DBZohoMail.SelectSingleText, 1);
             if (zoho_email == null)
@@ -94,24 +94,24 @@ namespace vina.Server.Controllers
                 return BadRequest();
 #endif
             }
-            if (zoho_email.AccessTokenValidUntil < DateTime.UtcNow || string.IsNullOrEmpty(zoho_email.AccessToken))
-            {
-                if (string.IsNullOrEmpty(zoho_email.RefreshToken))
-                {
-                    // we need to RequestZohoAuthorization 
-                    await ExchangeAuthorizationCodeForAccessToken(zoho_email);
-                }
-                else
-                {
+             if (zoho_email.AccessTokenValidUntil < DateTime.UtcNow || string.IsNullOrEmpty(zoho_email.AccessToken))
+             {
+                 if (string.IsNullOrEmpty(zoho_email.RefreshToken))
+                 {
+                     // we need to RequestZohoAuthorization 
+                     await ExchangeAuthorizationCodeForAccessToken(zoho_email);
+                 }
+                 else
+                 {
                     await RenewAccessToken(zoho_email);
-                }
-            }
+                 }
+             }
             if (zoho_email.AccessToken == null)
             {
                 _logger.LogError("Zoho access token not found");
                 return BadRequest();
             }
-            await _emailService.SendEmailAsync(
+            await _emailService.SendEmailAsync1(
                 zoho_email.AccessToken,
                 _appSettings.EmailSettings.EmailSender, email, mailSubject?.Content ?? "", mailBody);
 
@@ -154,7 +154,7 @@ namespace vina.Server.Controllers
                 query["client_id"] = _appSettings.EmailSettings.ClientId;
                 query["response_type"] = "code";
                 query["redirect_uri"] = _appSettings.EmailSettings.RedirectUri;
-                query["scope"] = "ZohoMail.messages.CREATE";
+                query["scope"] = "ZohoMail.messages.ALL";
                 query["access_type"] = "offline";
 
                 var uriBuilder = new UriBuilder("https://accounts.zoho.eu/oauth/v2/auth")
@@ -248,7 +248,7 @@ namespace vina.Server.Controllers
                 query["client_id"] = _appSettings.EmailSettings.ClientId;
                 query["client_secret"] = _appSettings.EmailSettings.ClientSecret;
                 query["redirect_uri"] = _appSettings.EmailSettings.RedirectUri;
-                query["scope"] = "ZohoMail.messages.CREATE";
+                query["scope"] = "ZohoMail.messages.ALL";
 
                 var uriBuilder = new UriBuilder($"https://accounts.zoho.eu/oauth/v2/token")
                 {

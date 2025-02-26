@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
+using RestSharp;
 using vina.Server.Config;
 using vina.Server.Models;
 
@@ -35,7 +36,7 @@ namespace vina.Server.Controllers
             string body
             )
         {
-            await _mailJet.SendEmailAsync(toEmail,subject,body);                
+            await _mailJet.SendEmailAsync(toEmail, subject, body);
         }
         public async Task SendEmailAsync(
             string emailToken,
@@ -61,7 +62,7 @@ namespace vina.Server.Controllers
                 _logger.LogInformation($"Sending email via {_appSettings.EmailSettings.EmailWebserviceUrl}: {json}");
                 var httpResponse = await client.PostAsync(_appSettings.EmailSettings.EmailWebserviceUrl, content);
                 var responseString = await httpResponse.Content.ReadAsStringAsync();
-                if(!httpResponse.IsSuccessStatusCode)
+                if (!httpResponse.IsSuccessStatusCode)
                 {
                     _logger.LogError($"Error sending email: {responseString}");
                 }
@@ -70,10 +71,62 @@ namespace vina.Server.Controllers
                     var j = JsonDocument.Parse(responseString);
                     var root = j.RootElement;
                     var r = root.GetProperty("status").GetProperty("code").GetInt32();
-                    if(r>201)
+                    if (r > 201)
                         _logger.LogError($"Error sending email: {responseString}");
                     else
                         _logger.LogInformation($"Email sent: {responseString}");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending email");
+            }
+        }
+        public async Task SendEmailAsync1(
+               string accessToken,
+               string fromEmail,
+               string toEmail,
+               string subject,
+               string body
+               )
+        {
+            try
+            {
+                var client = new RestClient();
+                var request = new RestRequest(
+                    _appSettings.EmailSettings.EmailWebserviceUrl, 
+                    Method.Post);
+                request.AddHeader("Authorization", $"Zoho-oauthtoken {accessToken}");
+                request.RequestFormat = DataFormat.Json;
+                request.AddJsonBody(new { 
+                    fromAddress = fromEmail, 
+                    toAddress = toEmail,
+                    subject = subject,
+                    content = body
+                 }); // Anonymous type object is converted to Json body
+
+
+                var response = client.Execute(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError($"Error sending email: {response.Content}\naccess token:{accessToken}");
+                }
+                else
+                {
+                    if (response.Content == null)
+                    {
+                        _logger.LogError("Error sending email\naccess token:{accessToken}");
+                        return;
+                    }
+                    var j = JsonDocument.Parse(response.Content);
+                    var root = j.RootElement;
+                    var r = root.GetProperty("status").GetProperty("code").GetInt32();
+                    if (r > 201)
+                        _logger.LogError($"Error sending email: {response.Content}\naccess token:{accessToken}");
+                    else
+                        _logger.LogInformation($"Email sent: {response.Content}");
 
                 }
             }
