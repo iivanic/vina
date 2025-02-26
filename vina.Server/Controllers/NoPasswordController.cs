@@ -76,6 +76,11 @@ namespace vina.Server.Controllers
             mailBody += "<p>" + (await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_signature", lang = lang }))?.Content + "</p>";
 
+
+            //send email with mailjet
+            await _emailService.SendEmailAsyncMailJet(email, mailSubject?.Content ?? "", mailBody);
+            return  NoContent();
+
             var zoho_email = await _dBcs.RunQuerySingleOrDefaultAsync<DBZohoMail>(DBZohoMail.SelectSingleText, 1);
             if (zoho_email == null)
             {

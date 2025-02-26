@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using vina.Server.Config;
 using vina.Server.Controllers;
+using vina.Server.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +54,12 @@ builder.Services.Configure<AppSettingsOptions>(builder.Configuration.GetSection(
 builder.Services.AddSingleton(connectionString);
 
 builder.Services.AddSingleton<IDBcs>(provider => {return new DBcs.DBcs(connectionString);});
+
+//enable mail sending
+builder.Services.AddTransient<IEmailSender, MailJetEmailService>();
+builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
+
+
 var app = builder.Build();
 
 app.UseDefaultFiles();

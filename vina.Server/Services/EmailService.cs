@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using vina.Server.Config;
 using vina.Server.Models;
@@ -12,20 +13,30 @@ namespace vina.Server.Controllers
         private static readonly HttpClient client = new HttpClient();
         private readonly AppSettingsOptions _appSettings;
         private readonly ILogger<EmailService> _logger;
+        private readonly IEmailSender _mailJet;
 
         private readonly string _connectionString;
         public EmailService(
             ILogger<EmailService> logger,
             IConfiguration config,
             IOptions<AppSettingsOptions> appSettings,
-            string connectionString)
+            string connectionString,
+            IEmailSender mailJet)
         {
+            _mailJet = mailJet;
             _logger = logger;
             _appSettings = appSettings.Value;
             _connectionString = connectionString;
             _config = config;
         }
-
+        public async Task SendEmailAsyncMailJet(
+            string toEmail,
+            string subject,
+            string body
+            )
+        {
+            await _mailJet.SendEmailAsync(toEmail,subject,body);                
+        }
         public async Task SendEmailAsync(
             string emailToken,
             string fromEmail,
