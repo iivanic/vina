@@ -111,20 +111,20 @@ namespace vina.Server.Controllers
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    _logger.LogError($"Error sending email: {response.Content}\naccess token:{accessToken}");
+                    _logger.LogError($"Error sending email with {_appSettings.EmailSettings.EmailWebserviceUrl}: {response.Content}\naccess token:{accessToken}");
                 }
                 else
                 {
                     if (response.Content == null)
                     {
-                        _logger.LogError("Error sending email\naccess token:{accessToken}");
+                        _logger.LogError("Error sending email with {_appSettings.EmailSettings.EmailWebserviceUrl}\naccess token:{accessToken}");
                         return;
                     }
                     var j = JsonDocument.Parse(response.Content);
                     var root = j.RootElement;
                     var r = root.GetProperty("status").GetProperty("code").GetInt32();
                     if (r > 201)
-                        _logger.LogError($"Error sending email: {response.Content}\naccess token:{accessToken}");
+                        _logger.LogError($"Error sending emailwith {_appSettings.EmailSettings.EmailWebserviceUrl}: {response.Content}\naccess token:{accessToken}");
                     else
                         _logger.LogInformation($"Email sent: {response.Content}");
 
@@ -132,7 +132,7 @@ namespace vina.Server.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error sending email");
+                _logger.LogError(ex, "Error sending email with {_appSettings.EmailSettings.EmailWebserviceUrl}");
             }
         }
     }
