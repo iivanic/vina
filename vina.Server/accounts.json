@@ -1,0 +1,99 @@
+{
+    "status": {
+        "code": 200,
+        "description": "success"
+    },
+    "data": [
+        {
+            "country": "hr",
+            "lastLogin": 1740489311564,
+            "mxStatus": true,
+            "activeSyncEnabled": false,
+            "incomingBlocked": false,
+            "language": "en",
+            "type": "ZOHO_ACCOUNT",
+            "extraStorage": {},
+            "incomingUserName": "info@vina-ivanic.hr",
+            "emailAddress": [
+                {
+                    "isAlias": false,
+                    "isPrimary": false,
+                    "mailId": "igor_ivanic@hotmail.com",
+                    "isConfirmed": true
+                },
+                {
+                    "isAlias": false,
+                    "isPrimary": true,
+                    "mailId": "info@vina-ivanic.hr",
+                    "isConfirmed": true
+                }
+            ],
+            "mailboxStatus": "enabled",
+            "popBlocked": false,
+            "usedStorage": 2541337,
+            "spamcheckEnabled": true,
+            "imapAccessEnabled": true,
+            "timeZone": "Europe/Zagreb",
+            "accountCreationTime": 1506429899372,
+            "zuid": 20061014681,
+            "webBlocked": false,
+            "planStorage": 5,
+            "firstName": "Igor",
+            "accountId": "297127000000002001",
+            "sequence": 1,
+            "mailboxAddress": "info@vina-ivanic.hr",
+            "lastPasswordReset": 1506429899712,
+            "tfaEnabled": true,
+            "iamStatus": 1,
+            "status": true,
+            "lastName": "Ivanic",
+            "accountDisplayName": "info",
+            "role": "super_admin",
+            "gender": "NOT_SPECIFIED",
+            "accountName": "vina-ivanic",
+            "displayName": "Igor",
+            "isLogoExist": false,
+            "URI": "https://mail.zoho.eu/api/accounts/297127000000002001",
+            "primaryEmailAddress": "info@vina-ivanic.hr",
+            "enabled": true,
+            "mailboxCreationTime": 0,
+            "basicStorage": "free",
+            "lastClient": "WEB_ZM",
+            "allowedStorage": 5242880,
+            "sendMailDetails": [
+                {
+                    "sendMailId": "297127000000002003",
+                    "displayName": "Igor Ivanic",
+                    "serverName": "smtpout-mail.zoho.eu",
+                    "signatureId": "297127000000068004",
+                    "serverPort": 25,
+                    "userName": "info@vina-ivanic.hr",
+                    "connectionType": "plain",
+                    "mode": "mailbox",
+                    "validated": false,
+                    "fromAddress": "info@vina-ivanic.hr",
+                    "smtpConnection": 0,
+                    "validationRequired": true,
+                    "validationState": 0,
+                    "status": true
+                }
+            ],
+            "popFetchTime": -1,
+            "address": {},
+            "planType": 0,
+            "userExpiry": -1,
+            "popAccessEnabled": false,
+            "deliveryType": "LOCAL",
+            "imapBlocked": false,
+            "iamUserRole": "super_admin",
+            "outgoingBlocked": false,
+            "policyId": {
+                "zoid": 20061014680,
+                "2000001894866": "Business Policy"
+            },
+            "isDesignatedMailbox": false,
+            "smtpStatus": true,
+            "extraEDiscoveryStorage": {}
+        }
+    ]
+}
