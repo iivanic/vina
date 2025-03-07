@@ -10,6 +10,11 @@ using System.Web;
 using Microsoft.Extensions.Options;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 namespace vina.Server.Controllers
 {
     [ApiController]
@@ -79,7 +84,7 @@ namespace vina.Server.Controllers
 
             //send email with mailjet
             await _emailService.SendEmailAsyncMailJet(email, mailSubject?.Content ?? "", mailBody);
-            return  NoContent();
+            return NoContent();
 
             var zoho_email = await _dBcs.RunQuerySingleOrDefaultAsync<DBZohoMail>(DBZohoMail.SelectSingleText, 1);
             if (zoho_email == null)
@@ -94,18 +99,18 @@ namespace vina.Server.Controllers
                 return BadRequest();
 #endif
             }
-             if (zoho_email.AccessTokenValidUntil < DateTime.UtcNow || string.IsNullOrEmpty(zoho_email.AccessToken))
-             {
-                 if (string.IsNullOrEmpty(zoho_email.RefreshToken))
-                 {
-                     // we need to RequestZohoAuthorization 
-                     await ExchangeAuthorizationCodeForAccessToken(zoho_email);
-                 }
-                 else
-                 {
+            if (zoho_email.AccessTokenValidUntil < DateTime.UtcNow || string.IsNullOrEmpty(zoho_email.AccessToken))
+            {
+                if (string.IsNullOrEmpty(zoho_email.RefreshToken))
+                {
+                    // we need to RequestZohoAuthorization 
+                    await ExchangeAuthorizationCodeForAccessToken(zoho_email);
+                }
+                else
+                {
                     await RenewAccessToken(zoho_email);
-                 }
-             }
+                }
+            }
             if (zoho_email.AccessToken == null)
             {
                 _logger.LogError("Zoho access token not found");
@@ -123,20 +128,49 @@ namespace vina.Server.Controllers
         public async Task<ActionResult<String>> Verify(string token, string email)
         {
             // Fetch your user from the database
-            var User = await _userManager.FindByEmailAsync(email);
-            if (User == null)
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
             {
                 return Unauthorized();
             }
-
-            var IsValid = await _userManager.VerifyUserTokenAsync(User, "NPTokenProvider", "nopassword-for-the-win", token);
+            token=HttpUtility.UrlDecode(token);
+            token=token.Replace(" ", "+");
+            var IsValid = await _userManager.VerifyUserTokenAsync(user, "NPTokenProvider", "nopassword-for-the-win", token);
             if (IsValid)
             {
-                // TODO: Generate a bearer token
-                var BearerToken = Guid.NewGuid().ToString("N");
-                return BearerToken;
+                await _userManager.UpdateSecurityStampAsync(user);
+                await HttpContext.SignInAsync(
+                    IdentityConstants.ApplicationScheme,
+                    new ClaimsPrincipal(
+                        new ClaimsIdentity(
+                            new List<Claim>
+                            {
+                                new Claim("sub", user.Id)
+                            },
+                            IdentityConstants.ApplicationScheme
+                        )
+                    )
+                );
+                // var tokenHandler = new JwtSecurityTokenHandler();
+                // var tokenKey = Encoding.UTF8.GetBytes(_appSettings.JWT.Key);
+                // var tokenDescriptor = new SecurityTokenDescriptor
+                // {
+                //     Subject = new ClaimsIdentity(new Claim[]{
+                //         new Claim(ClaimTypes.Email, email)
+                //     }),
+                //     Expires = DateTime.UtcNow.AddMinutes(10),
+                //     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
+                // };
+                // var jwToken = tokenHandler.CreateToken(tokenDescriptor);
+                //     return new OkObjectResult(new Tokens { Token = tokenHandler.WriteToken(jwToken) });
+             
             }
             return Unauthorized();
+        }
+        public class Tokens
+        {
+            public string? Token { get; set; }
+            public string? RefreshToken { get; set; }
         }
 
 #if DEBUG
