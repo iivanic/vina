@@ -83,8 +83,8 @@ namespace vina.Server.Controllers
 
 
             //send email with mailjet
-        //    await _emailService.SendEmailAsyncMailJet(email, mailSubject?.Content ?? "", mailBody);
-        //    return  NoContent();
+            //    await _emailService.SendEmailAsyncMailJet(email, mailSubject?.Content ?? "", mailBody);
+            //    return  NoContent();
 
             var zoho_email = await _dBcs.RunQuerySingleOrDefaultAsync<DBZohoMail>(DBZohoMail.SelectSingleText, 1);
             if (zoho_email == null)
@@ -116,7 +116,12 @@ namespace vina.Server.Controllers
                 _logger.LogError("Zoho access token not found");
                 return BadRequest();
             }
+
+            var localizedSenderName = await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
+                DBTranslation.SelectKeyLangText, new { key = "token_mail_signature", lang = lang });
+
             await _emailService.SendEmailAsync1(
+                localizedSenderName?.Content?.ToString() ?? "",
                 zoho_email.AccessToken,
                 _appSettings.EmailSettings.EmailSender, email, mailSubject?.Content ?? "", mailBody);
 
@@ -133,8 +138,8 @@ namespace vina.Server.Controllers
             {
                 return Unauthorized();
             }
-            token=HttpUtility.UrlDecode(token);
-            token=token.Replace(" ", "+");
+            token = HttpUtility.UrlDecode(token);
+            token = token.Replace(" ", "+");
             var IsValid = await _userManager.VerifyUserTokenAsync(user, "NPTokenProvider", "nopassword-for-the-win", token);
             if (IsValid)
             {
@@ -163,7 +168,7 @@ namespace vina.Server.Controllers
                 // };
                 // var jwToken = tokenHandler.CreateToken(tokenDescriptor);
                 //     return new OkObjectResult(new Tokens { Token = tokenHandler.WriteToken(jwToken) });
-             
+
             }
             return Unauthorized();
         }
@@ -319,25 +324,33 @@ namespace vina.Server.Controllers
                     var responseBody = await response.Content.ReadAsStringAsync();
                     var j = JsonDocument.Parse(responseBody);
                     var root = j.RootElement;
-                    zoho_email.AccessToken = root.GetProperty("access_token").GetString();
-                    if (string.IsNullOrEmpty(zoho_email.AccessToken))
-                        _logger.LogError("Zoho Access Token not recieved");
+                    if (root.TryGetProperty("access_token", out var at))
+                    {
+                        zoho_email.AccessToken = at.GetString();
+                        if (string.IsNullOrEmpty(zoho_email.AccessToken))
+                            _logger.LogError("Zoho Access Token not recieved");
 
-                    zoho_email.ApiDomain = root.GetProperty("api_domain").GetString();
+                        zoho_email.ApiDomain = root.GetProperty("api_domain").GetString();
 
-                    if (root.TryGetProperty("refresh_token", out var rt))
-                        zoho_email.RefreshToken = rt.GetString();
+                        if (root.TryGetProperty("refresh_token", out var rt))
+                            zoho_email.RefreshToken = rt.GetString();
+                        else
+                            _logger.LogWarning("Zoho Refresh Token not recieved.");
+
+                        zoho_email.AccessTokenExpiresIn = root.GetProperty("expires_in").GetInt32();
+                        zoho_email.AccessTokenType = root.GetProperty("token_type").GetString();
+                        zoho_email.AccessTokenTimestamp = DateTime.UtcNow;
+                        zoho_email.AccessTokenValidUntil = zoho_email.AccessTokenTimestamp.Value.AddSeconds(
+                            Convert.ToDouble(zoho_email.AccessTokenExpiresIn));
+                        await _dBcs.RunNonQueryAsync(DBZohoMail.UpdateText, zoho_email);
+                        _logger.LogInformation($"ExchangeAuthorizationCodeForAccessToken: Zoho email settings updated: {responseBody}");
+                        return Ok(responseBody);
+                    }
                     else
-                        _logger.LogWarning("Zoho Refresh Token not recieved.");
-
-                    zoho_email.AccessTokenExpiresIn = root.GetProperty("expires_in").GetInt32();
-                    zoho_email.AccessTokenType = root.GetProperty("token_type").GetString();
-                    zoho_email.AccessTokenTimestamp = DateTime.UtcNow;
-                    zoho_email.AccessTokenValidUntil = zoho_email.AccessTokenTimestamp.Value.AddSeconds(
-                        Convert.ToDouble(zoho_email.AccessTokenExpiresIn));
-                    await _dBcs.RunNonQueryAsync(DBZohoMail.UpdateText, zoho_email);
-                    _logger.LogInformation($"ExchangeAuthorizationCodeForAccessToken: Zoho email settings updated: {responseBody}");
-                    return Ok(responseBody);
+                    {
+                        _logger.LogError("Zoho Access Token not recieved");
+                        return BadRequest();
+                    }
                 }
                 else
                 {

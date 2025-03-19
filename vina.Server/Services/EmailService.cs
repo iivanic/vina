@@ -84,27 +84,29 @@ namespace vina.Server.Controllers
             }
         }
         public async Task SendEmailAsync1(
-               string accessToken,
-               string fromEmail,
-               string toEmail,
-               string subject,
-               string body
-               )
+            string localizedSenderName,
+            string accessToken,
+            string fromEmail,
+            string toEmail,
+            string subject,
+            string body
+            )
         {
             try
             {
                 var client = new RestClient();
                 var request = new RestRequest(
-                    _appSettings.EmailSettings.EmailWebserviceUrl, 
+                    _appSettings.EmailSettings.EmailWebserviceUrl,
                     Method.Post);
                 request.AddHeader("Authorization", $"Zoho-oauthtoken {accessToken}");
                 request.RequestFormat = DataFormat.Json;
-                request.AddJsonBody(new { 
-                    fromAddress = fromEmail, 
+                request.AddJsonBody(new
+                {
+                    fromAddress = $"{localizedSenderName} <{fromEmail}>",
                     toAddress = toEmail,
                     subject = subject,
                     content = body
-                 }); // Anonymous type object is converted to Json body
+                }); // Anonymous type object is converted to Json body
 
 
                 var response = client.Execute(request);
