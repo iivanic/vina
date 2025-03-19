@@ -38,7 +38,7 @@ builder.Services.AddDbContext<NPDataContext>(options => options.UseNpgsql(connec
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = IdentityConstants.ExternalScheme;
-});
+}) .AddCookie();
 
 builder.Services.AddTransient<NPDataContext>(); // Register IdentityDbContext for dependency injection
 // -----------------------------------------
