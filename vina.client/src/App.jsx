@@ -74,17 +74,11 @@ function App({ locale, direction, onLocaleChange }) {
         <>
             <VinaNavbar locale={locale} direction={direction} onLocaleChange={onLocaleChange} />
             <Container id="home">
-                <Row>
-                    <Col>
-                        <br></br>
-                        <br></br>
-                        <br></br>
-                        <br></br><br></br><br></br>
-                        <hr />
+                <Row className="pt-5">
+                    <Col className="mt-5 pt-5">
                         <h3>
                             <FormattedMessage id="message.welcome" />
                         </h3>
-                        <hr />
                         <p>
                             {intl.formatMessage({ id: "message.winemaking1" })}
                         </p><p>
