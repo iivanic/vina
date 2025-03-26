@@ -1,18 +1,20 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace vina.Server.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
-    public class AuthController : ControllerBase
+    public class UserController : ControllerBase
     {
 
-        private readonly ILogger<AuthController> _logger;
+        private readonly ILogger<UserController> _logger;
         private readonly AuthService _authService;
 
-        public AuthController(ILogger<AuthController> logger, AuthService authService)
+        public UserController(ILogger<UserController> logger, AuthService authService)
         {
             _logger = logger;
             _authService = authService;
@@ -41,14 +43,6 @@ namespace vina.Server.Controllers
             }
 
             return ret;
-        }
-
-
-
-        [HttpGet("{lang:alpha:minlength(2):maxlength(2)}/email/{email:alpha:minlength(6):maxlength(50)}")]
-        public string Token(string lang, string email)
-        {
-            return "";
         }
 
     }

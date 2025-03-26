@@ -19,7 +19,7 @@ namespace vina.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class NoPasswordController : ControllerBase
+    public class AccountController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IDBcs _dBcs;
@@ -27,7 +27,7 @@ namespace vina.Server.Controllers
         private readonly AppSettingsOptions _appSettings;
         private readonly ILogger<ProductsController> _logger;
 
-        public NoPasswordController(
+        public AccountController(
             ILogger<ProductsController> logger,
             UserManager<IdentityUser> userManager,
             IDBcs dBcs,
@@ -120,12 +120,13 @@ namespace vina.Server.Controllers
             var localizedSenderName = await _dBcs.RunQuerySingleOrDefaultAsync<DBTranslation>(
                 DBTranslation.SelectKeyLangText, new { key = "token_mail_signature", lang = lang });
 
+            //send email with token
             await _emailService.SendEmailAsync1(
                 localizedSenderName?.Content?.ToString() ?? "",
                 zoho_email.AccessToken,
                 _appSettings.EmailSettings.EmailSender, email, mailSubject?.Content ?? "", mailBody);
 
-            //send email with token
+
             return NoContent();
         }
 
