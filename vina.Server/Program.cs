@@ -9,6 +9,9 @@ using vina.Server.Config;
 using vina.Server.Controllers;
 using vina.Server.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,16 +31,33 @@ builder.Logging.AddProvider(new LoggerDatabaseProvider(connectionString));
 // ---------------identity ----------------
 var ic = builder.Services.AddIdentityCore<IdentityUser>()
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<NPDataContext>();
+    .AddEntityFrameworkStores<NPDataContext>()
+    .AddDefaultTokenProviders();
     
 var UserType = ic.UserType;
 var provider = typeof(NPTokenProvider<>).MakeGenericType(UserType);
 ic.AddTokenProvider("NPTokenProvider", provider);
 builder.Services.AddDbContext<NPDataContext>(options => options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention());
 
-builder.Services.AddAuthentication(options =>
+builder.Services.AddAuthentication(x =>
 {
-    options.DefaultScheme = IdentityConstants.ExternalScheme;
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(o =>
+{
+    var Key = Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]);
+    o.SaveToken = true;
+    o.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        ValidAudience = builder.Configuration["JWT:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Key)
+    };
 });
 
 builder.Services.AddTransient<NPDataContext>(); // Register IdentityDbContext for dependency injection
@@ -48,6 +68,17 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<AuthService>(); // Register AuthService for dependency injection
 builder.Services.AddScoped<EmailService>(); // 
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromHours(12);
+    options.SlidingExpiration = true;
+    options.LoginPath = new PathString("/Account");
+    options.ReturnUrlParameter = "returnURL";
+    //other properties
+});
+
+
 
 builder.Services.Configure<AppSettingsOptions>(builder.Configuration.GetSection(AppSettingsOptions.AppSettings));
 //builder.Services.AddSingleton<AppSettingsOptions>();

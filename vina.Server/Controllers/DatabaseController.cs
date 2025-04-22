@@ -1,17 +1,20 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace vina.Server.Controllers
 {
+
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class DatabaseController : ControllerBase
     {
 
-        private readonly ILogger<AuthController> _logger;
+        private readonly ILogger<UserController> _logger;
 
-        public DatabaseController(ILogger<AuthController> logger)
+        public DatabaseController(ILogger<UserController> logger)
         {
             _logger = logger;
         }

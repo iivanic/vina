@@ -35,3 +35,6 @@ Accept: application/json
 ###
 GET {{Server_HostAddress}}/nopassword/zohoredirect?code=12345&location=us&accounts-server=accsrv
 Accept: application/json
+
+###
+GET {{Server_HostAddress}}/nopassword/CfDJ8CH9rJOrPExOr7HejYEFPWsHzHti9AWzddqqGKzsJ7W4HQXdd0a4HSKp4ytw%2b%2b6szljYjBJMMXEcaMlI4boQlXmrtYnik6UlBXmxvqikyZpAatD6ZDFZ0fOGPJwN6mfw4%2fXGtT4tUX7iaOn3xbZHC4yH7b1TATHj4AtpmMX79IoyvyfNc81FjWmF2zUkX0Kb0ajy93cqFmmyN494jlvspcClr6p1w43Dh9CQaniZ%2bvsZGjxFo2ty%2fDo88wZXR3GUxQ%3d%3d/igor.ivanic@omniaspect.hr
