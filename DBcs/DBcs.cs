@@ -508,7 +508,10 @@ public class DBcs : IDBcs
                         var add = o.GetType().GetMethod("Add");
                         var ctors1 = typeOfList[0].GetConstructors();
                         var o1 = ctors1[0].Invoke(new object[] { });
-                        add.Invoke(o, new[] { o1 });
+                        if (add != null)
+                        {
+                            _ = add.Invoke(o, new[] { o1 });
+                        }
                         FillComplexObject(e.Table, o1, e.DataReader);
                     }
                     else
@@ -549,7 +552,7 @@ public class DBcs : IDBcs
         object[] attrs = p.PropertyType.GetCustomAttributes(true);
         foreach (object attr in attrs)
         {
-            TableAttribute talbeAttr = attr as TableAttribute;
+            TableAttribute? talbeAttr = attr as TableAttribute;
             if (talbeAttr != null)
             {
                 string propName = p.Name;
@@ -564,6 +567,8 @@ public class DBcs : IDBcs
 
     private void FillComplexObject<T>(TableColumns table, T obj2Fill, IDataReader dr)
     {
+        if (obj2Fill == null)
+            return;
         PropertyInfo[] propertyInfos = obj2Fill.GetType().GetProperties();
         foreach (var column in table.ColumnIndices)
         {
