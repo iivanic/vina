@@ -27,6 +27,10 @@ public class LoginRedirectController : Controller
     public async Task<IActionResult> Login(string token, string email, string returnUrl)
     {
         var user = await _userManager.FindByEmailAsync(email);
+        if(user is null)
+        {
+            return Unauthorized();
+        }
         var isValid = await _userManager.VerifyUserTokenAsync(user, "Default", "passwordless-auth", token);
 
         if (isValid)
@@ -46,7 +50,12 @@ public class LoginRedirectController : Controller
                 )
             );
             var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenKey = Encoding.UTF8.GetBytes(_iconfiguration["JWT:Key"]);
+            var jwtKey = _iconfiguration["JWT:Key"];
+            if (string.IsNullOrEmpty(jwtKey))
+            {
+                throw new InvalidOperationException("JWT:Key configuration value is missing.");
+            }
+            var tokenKey = Encoding.UTF8.GetBytes(jwtKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]

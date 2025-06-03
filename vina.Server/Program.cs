@@ -46,7 +46,10 @@ builder.Services.AddAuthentication(x =>
 })
 .AddJwtBearer(o =>
 {
-    var Key = Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]);
+    var jwtKey = builder.Configuration["JWT:Key"];
+    if (string.IsNullOrEmpty(jwtKey))
+        throw new InvalidOperationException("JWT:Key configuration is missing or empty.");
+    var Key = Encoding.UTF8.GetBytes(jwtKey);
     o.SaveToken = true;
     o.TokenValidationParameters = new TokenValidationParameters
     {
