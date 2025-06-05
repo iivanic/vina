@@ -119,7 +119,7 @@ app.MapControllers();
 app.MapFallbackToFile("/index.html");
 
 //Seeder.Instance.DbReCreateEmpty().GetAwaiter().GetResult();
-//Seeder.Instance.DbEnsureCratedAndSeed(app).GetAwaiter().GetResult();
+Seeder.Instance.DbEnsureCratedAndSeed(app).GetAwaiter().GetResult();
 //var c = Seeder.Instance.GetClasses(["DBLog"],"select * from public.logs").GetAwaiter().GetResult();
 
 app.Run();
