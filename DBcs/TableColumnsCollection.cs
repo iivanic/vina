@@ -5,7 +5,7 @@ namespace DBcs;
 
 public class TableColumnsCollection<T> : List<TableColumns>
 {
-    public event EventHandler<TableChangedEventArgs> TableChanged;
+   // public event EventHandler<TableChangedEventArgs>? TableChanged;
     public List<T> ReturnCollection { get; set; } = new List<T>();
 
     public TableColumns AddTable(string tableName, int columnIndex,
@@ -42,8 +42,8 @@ public class TableColumnsCollection<T> : List<TableColumns>
 }
 public class TableChangedEventArgs : EventArgs
 {
-    public Type RootType { get; set; }
-    public IDataReader DataReader { get; set; }
-    public TableColumns Table { get; set; }
+    public Type? RootType { get; set; }
+    public IDataReader? DataReader { get; set; }
+    public TableColumns? Table { get; set; }
     
 }
