@@ -109,7 +109,7 @@ namespace vina.Server.Controllers
                 }); // Anonymous type object is converted to Json body
 
 
-                var response = client.Execute(request);
+                var response = await client.ExecuteAsync(request);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -119,7 +119,7 @@ namespace vina.Server.Controllers
                 {
                     if (response.Content == null)
                     {
-                        _logger.LogError("Error sending email with {_appSettings.EmailSettings.EmailWebserviceUrl}\naccess token:{accessToken}");
+                        _logger.LogError($"Error sending email with {_appSettings.EmailSettings.EmailWebserviceUrl}\naccess token:{accessToken}");
                         return;
                     }
                     var j = JsonDocument.Parse(response.Content);
@@ -134,7 +134,7 @@ namespace vina.Server.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error sending email with {_appSettings.EmailSettings.EmailWebserviceUrl}");
+                _logger.LogError(ex, $"Error sending email with {_appSettings.EmailSettings.EmailWebserviceUrl}");
             }
         }
     }

@@ -1,0 +1,9 @@
+--get all tables
+select * from information_schema.tables
+where 
+--table_type = 'BASE TABLE' and 
+table_schema = 'public';
+
+select * from asp_net_user_tokens;
+select * from tokens;
+select * from zoho_mail;

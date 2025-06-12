@@ -70,7 +70,7 @@ namespace DBcs
 
         private bool IsValueType(string type)
         {
-            Type t = Type.GetType(type);
+            Type? t = Type.GetType(type);
             if (t == null)
                 return false;
             return t.IsValueType;

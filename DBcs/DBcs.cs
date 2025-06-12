@@ -236,6 +236,8 @@ public class DBcs : IDBcs
             databaseTables.Add(databaseTable);
 
             DataTable? dt = dr.GetSchemaTable();
+            if (dt == null)
+                throw new InvalidOperationException("Schema table is null.");
             string tableName = $"{dt.Rows[0].ItemArray[10]}.{dt.Rows[0].ItemArray[11]}";
             databaseTable.TableName = $"{dt.Rows[0].ItemArray[11]}";
             databaseTable.FullTableName = tableName;
@@ -245,8 +247,15 @@ public class DBcs : IDBcs
             {
                 var databaseTableRow = new DatabaseTableRow();
                 databaseTable.Rows.Add(databaseTableRow);
-                bool isKey = (bool)dt.Rows[column].ItemArray[dt.Rows[column].Table.Columns["IsKey"].Ordinal];
-                bool allowDBNull = (bool)dt.Rows[column].ItemArray[dt.Rows[column].Table.Columns["AllowDBNull"].Ordinal];
+                object? isKeyObj = null;
+                object? allowDBNullObj = null;
+                if (dt.Rows[column].Table != null)
+                {
+                    isKeyObj = dt.Rows[column].ItemArray[dt.Rows[column].Table.Columns["IsKey"].Ordinal];
+                    allowDBNullObj = dt.Rows[column].ItemArray[dt.Rows[column].Table.Columns["AllowDBNull"].Ordinal];
+                }
+                bool isKey = isKeyObj != null && Convert.ToBoolean(isKeyObj);
+                bool allowDBNull = allowDBNullObj != null && Convert.ToBoolean(allowDBNullObj);
 
                 databaseTableRow.IsDBNull = allowDBNull;
                 databaseTableRow.IsKey = isKey;
@@ -271,7 +280,7 @@ public class DBcs : IDBcs
                 {
                     typeName = GetFriendlyTypeName(typeName);
                 }
-                databaseTableRow.DotNetPropertyType = fieldType.FullName;
+                databaseTableRow.DotNetPropertyType = fieldType?.FullName ?? string.Empty;
                 databaseTableRow.PropertyType = typeName;
 
                 //is FK?
@@ -508,7 +517,10 @@ public class DBcs : IDBcs
                         var add = o.GetType().GetMethod("Add");
                         var ctors1 = typeOfList[0].GetConstructors();
                         var o1 = ctors1[0].Invoke(new object[] { });
-                        add.Invoke(o, new[] { o1 });
+                        if (add != null)
+                        {
+                            _ = add.Invoke(o, new[] { o1 });
+                        }
                         FillComplexObject(e.Table, o1, e.DataReader);
                     }
                     else
@@ -549,7 +561,7 @@ public class DBcs : IDBcs
         object[] attrs = p.PropertyType.GetCustomAttributes(true);
         foreach (object attr in attrs)
         {
-            TableAttribute talbeAttr = attr as TableAttribute;
+            TableAttribute? talbeAttr = attr as TableAttribute;
             if (talbeAttr != null)
             {
                 string propName = p.Name;
@@ -564,6 +576,8 @@ public class DBcs : IDBcs
 
     private void FillComplexObject<T>(TableColumns table, T obj2Fill, IDataReader dr)
     {
+        if (obj2Fill == null)
+            return;
         PropertyInfo[] propertyInfos = obj2Fill.GetType().GetProperties();
         foreach (var column in table.ColumnIndices)
         {

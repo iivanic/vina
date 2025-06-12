@@ -25,6 +25,8 @@ let localeNames = {
   "de": "Deutsch / German",
   "en": "English",
 }
+import PropTypes from 'prop-types';
+
 function VinaNavbar({ locale, direction, onLocaleChange }) {
   const [validated, setValidated] = useState(false);
   const [show, setShow] = useState(false);
@@ -37,9 +39,9 @@ function VinaNavbar({ locale, direction, onLocaleChange }) {
   const handleShow = () => setShow(true);
 
   const handleSubmit = (event) => {
+    event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity() === false || new RegExp("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$", "g").test(value) == false) {
-      event.preventDefault();
       event.stopPropagation();
       setValidated(false);
       console.log("Not valid");
@@ -123,6 +125,10 @@ function VinaNavbar({ locale, direction, onLocaleChange }) {
     </>
   );
 }
-
+VinaNavbar.propTypes = {
+  locale: PropTypes.string.isRequired,
+  direction: PropTypes.string,
+  onLocaleChange: PropTypes.func.isRequired,
+};
 
 export default VinaNavbar;
