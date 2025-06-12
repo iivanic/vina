@@ -1,12 +1,71 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Igor_\\OneDrive\\Desktop\\vina\\vina\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\Igor\\vina\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}|vina.Server\\vina.Server.csproj|c:\\users\\igor\\vina\\vina.server\\controllers\\captchacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}|vina.Server\\vina.Server.csproj|solutionrelative:vina.server\\controllers\\captchacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}|vina.Server\\vina.Server.csproj|c:\\users\\igor\\vina\\vina.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}|vina.Server\\vina.Server.csproj|solutionrelative:vina.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}|vina.Server\\vina.Server.csproj|c:\\users\\igor\\vina\\vina.server\\services\\captchaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DC030FCF-22C0-4FE5-9685-3B234F73DA1B}|vina.Server\\vina.Server.csproj|solutionrelative:vina.server\\services\\captchaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Igor\\vina\\vina.Server\\Program.cs",
+              "RelativeDocumentMoniker": "vina.Server\\Program.cs",
+              "ToolTip": "C:\\Users\\Igor\\vina\\vina.Server\\Program.cs",
+              "RelativeToolTip": "vina.Server\\Program.cs",
+              "ViewState": "AgIAADYAAAAAAAAAAAAWwEYAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-12T09:12:34.579Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CaptchaService.cs",
+              "DocumentMoniker": "C:\\Users\\Igor\\vina\\vina.Server\\Services\\CaptchaService.cs",
+              "RelativeDocumentMoniker": "vina.Server\\Services\\CaptchaService.cs",
+              "ToolTip": "C:\\Users\\Igor\\vina\\vina.Server\\Services\\CaptchaService.cs",
+              "RelativeToolTip": "vina.Server\\Services\\CaptchaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-12T09:08:10.186Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CaptchaController.cs",
+              "DocumentMoniker": "C:\\Users\\Igor\\vina\\vina.Server\\Controllers\\CaptchaController.cs",
+              "RelativeDocumentMoniker": "vina.Server\\Controllers\\CaptchaController.cs",
+              "ToolTip": "C:\\Users\\Igor\\vina\\vina.Server\\Controllers\\CaptchaController.cs",
+              "RelativeToolTip": "vina.Server\\Controllers\\CaptchaController.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAYwC0AAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-12T09:07:46.485Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

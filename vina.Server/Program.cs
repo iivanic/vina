@@ -59,11 +59,16 @@ builder.Services.AddAuthentication(x =>
         IssuerSigningKey = new SymmetricSecurityKey(Key)
     };
 });
-
+//for captcha
+builder.Services.AddMemoryCache();
 builder.Services.AddTransient<NPDataContext>(); // Register IdentityDbContext for dependency injection
 // -----------------------------------------
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    // This stops System.Text.Json from converting property names to camelCase
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+}); ;
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<AuthService>(); // Register AuthService for dependency injection
